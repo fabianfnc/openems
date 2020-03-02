@@ -12,6 +12,11 @@
       <ion-grid class="ion-no-padding">
         <ion-row>
           <!-- Regular Widgets -->
+
+          <ion-col size="12" size-lg="6" class="ion-no-padding">
+            <scheduler></scheduler>
+          </ion-col>
+
           <ng-container *ngFor="let clazz of widgets.classes" [ngSwitch]="clazz">
 
             <ion-col *ngSwitchCase="'Autarchy'" size="12" size-lg="6" class="ion-no-padding">
