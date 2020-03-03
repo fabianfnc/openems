@@ -1,14 +1,15 @@
 import { Component } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { Service } from '../../../../shared/shared';
+import { ScheduleComponent } from '../schedule/schedule.component';
 
 @Component({
-  selector: SchedulerModalComponent.SELECTOR,
+  selector: RedlightModalComponent.SELECTOR,
   templateUrl: './modal.component.html'
 })
-export class SchedulerModalComponent {
+export class RedlightModalComponent {
 
-  private static readonly SELECTOR = "scheduler-modal";
+  private static readonly SELECTOR = "redlight-modal";
 
   public isOn: boolean = true;
 
@@ -25,5 +26,12 @@ export class SchedulerModalComponent {
   updateMode(event: CustomEvent) {
     let newMode = event.detail.value;
     console.log("neuer Modus: ", newMode)
+  }
+
+  async presentModal() {
+    const modal = await this.modalCtrl.create({
+      component: ScheduleComponent,
+    });
+    return await modal.present();
   }
 }

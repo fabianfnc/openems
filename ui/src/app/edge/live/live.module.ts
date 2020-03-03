@@ -27,6 +27,9 @@ import { NgModule } from '@angular/core';
 import { OfflineComponent } from './offline/offline.component';
 import { ProductionComponent } from './production/production.component';
 import { ProductionModalComponent } from './production/modal/modal.component';
+import { RedlightComponent } from './redlight/redlight.component';
+import { RedlightModalComponent } from './redlight/modal/modal.component';
+import { ScheduleComponent } from './redlight/schedule/schedule.component';
 import { SelfConsumptionComponent } from './selfconsumption/selfconsumption.component';
 import { SelfconsumptionModalComponent } from './selfconsumption/modal/modal.component';
 import { SharedModule } from './../../shared/shared.module';
@@ -36,9 +39,6 @@ import { StorageComponent } from './storage/storage.component';
 import { StorageModalComponent } from './storage/modal/modal.component';
 import { SymmetricPeakshavingComponent } from './peakshaving/symmetric/symmetricpeakshaving.component';
 import { SymmetricPeakshavingModalComponent } from './peakshaving/symmetric/modal/modal.component';
-import { SchedulerModalComponent } from './scheduler/modal/modal.component';
-import { SchedulerComponent } from './scheduler/scheduler.component';
-import { ScheduleComponent } from './scheduler/schedule/schedule.component';
 
 @NgModule({
   imports: [
@@ -59,8 +59,8 @@ import { ScheduleComponent } from './scheduler/schedule/schedule.component';
     GridModalComponent,
     ModalComponentEvcsCluster,
     ProductionModalComponent,
+    RedlightModalComponent,
     ScheduleComponent,
-    SchedulerModalComponent,
     SelfconsumptionModalComponent,
     SinglethresholdModalComponent,
     StorageModalComponent,
@@ -93,9 +93,9 @@ import { ScheduleComponent } from './scheduler/schedule/schedule.component';
     OfflineComponent,
     ProductionComponent,
     ProductionModalComponent,
+    RedlightComponent,
+    RedlightModalComponent,
     ScheduleComponent,
-    SchedulerComponent,
-    SchedulerModalComponent,
     SelfConsumptionComponent,
     SelfconsumptionModalComponent,
     SinglethresholdComponent,
