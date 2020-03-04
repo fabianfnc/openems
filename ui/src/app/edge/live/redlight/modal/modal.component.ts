@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { ModalController } from '@ionic/angular';
+import { ModalController, PopoverController } from '@ionic/angular';
 import { Service } from '../../../../shared/shared';
 import { ScheduleComponent } from '../schedule/schedule.component';
 
@@ -16,6 +16,7 @@ export class RedlightModalComponent {
   constructor(
     public modalCtrl: ModalController,
     public service: Service,
+    public popoverController: PopoverController,
   ) { }
 
   /**  
@@ -28,10 +29,13 @@ export class RedlightModalComponent {
     console.log("neuer Modus: ", newMode)
   }
 
-  async presentModal() {
-    const modal = await this.modalCtrl.create({
+  async presentPopover(ev: any) {
+    const popover = await this.popoverController.create({
       component: ScheduleComponent,
+      event: ev,
+      translucent: true,
+      cssClass: 'pickdate-popover',
     });
-    return await modal.present();
+    return await popover.present();
   }
 }

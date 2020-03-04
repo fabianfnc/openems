@@ -27,19 +27,10 @@ export class RedlightComponent {
     })
   }
 
-  // async presentModal() {
-  //   const modal = await this.modalCtrl.create({
-  //     component: RedlightModalComponent,
-  //   });
-  //   return await modal.present();
-  // }
-
-  async presentPopover(ev: any) {
-    const popover = await this.popoverController.create({
+  async presentModal() {
+    const modal = await this.modalCtrl.create({
       component: RedlightModalComponent,
-      event: ev,
-      translucent: true,
     });
-    return await popover.present();
+    return await modal.present();
   }
 }

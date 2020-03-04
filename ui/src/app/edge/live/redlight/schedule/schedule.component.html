@@ -5,7 +5,7 @@
     </ion-buttons>
     <ion-title>Scheduler</ion-title>
     <ion-buttons slot="end">
-      <ion-button (click)="modalCtrl.dismiss()">
+      <ion-button (click)="popoverController.dismiss()">
         <ion-icon name="close"></ion-icon>
       </ion-button>
     </ion-buttons>
@@ -13,5 +13,6 @@
 </ion-header>
 
 <ion-content>
-  alaklakaka
+  <my-date-range-picker [options]="dateRangePickerOptions" (dateRangeChanged)="onDateRangeChanged($event)">
+  </my-date-range-picker>
 </ion-content>
