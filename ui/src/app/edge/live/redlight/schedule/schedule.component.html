@@ -13,6 +13,81 @@
 </ion-header>
 
 <ion-content>
-  <my-date-range-picker [options]="dateRangePickerOptions" (dateRangeChanged)="onDateRangeChanged($event)">
-  </my-date-range-picker>
+  <ion-grid *ngIf="setScheduler == false">
+    <ng-container *ngFor="let items of scheduledArray">
+      <ion-item>
+        Scheduler
+      </ion-item>
+    </ng-container>
+    <ion-button (click)="setScheduler = true">
+      neuer scheduler
+    </ion-button>
+  </ion-grid>
+  <ion-grid *ngIf="setScheduler == true || setScheduler == null">
+    <ion-row class="ion-justify-content-center" [class.ion-padding-bottom]="scheduleDate">
+      <ion-button (click)="presentDatePopover($event)">
+        {{ scheduleDate == null? setDate:changeDate }}
+      </ion-button>
+    </ion-row>
+    <ng-container *ngIf="scheduleDate">
+      <table class="full_width">
+        <tr>
+          <td style="width: 35%">
+            Datum:
+          </td>
+          <td style="width: 65%" class="align_right">
+            {{ scheduleDate.getText(translate) }}
+          </td>
+        </tr>
+        <tr>
+          <td style="width: 35%">
+            Ganztägig
+          </td>
+          <td style="width: 65%" class="align_right">
+            <ion-toggle [(ngModel)]="allDay"></ion-toggle>
+          </td>
+        </tr>
+      </table>
+      <table class="full_width">
+        <tr>
+          <td style="width: 80%">
+            Von:
+          </td>
+          <td style="width: 20%" class="align_right">
+            <ion-item>
+              <ion-datetime displayFormat="HH:mm"></ion-datetime>
+            </ion-item>
+          </td>
+        </tr>
+        <tr>
+          <td style="width: 80%">
+            Bis:
+          </td>
+          <td style="width: 20%" class="align_right">
+            <ion-item>
+              <ion-datetime displayFormat="HH:mm"></ion-datetime>
+            </ion-item>
+          </td>
+        </tr>
+      </table>
+      <table class="full_width">
+        <tr style="padding-top: 20px;">
+          <td style="width:65%">
+            Wiederholen:
+          </td>
+          <td (click)="presentRepeatPopover()" style="width:35%; cursor: pointer" class="align_right">
+            {{ repeat }}
+          </td>
+        </tr>
+      </table>
+      <ion-row class="ion-justify-content-center">
+        <ion-button (click)="presentConfigModal()">
+          {{ isConfigSet == false? 'Konfiguration festlegen':'Konfiguration ändern' }}
+        </ion-button>
+      </ion-row>
+      <ion-row class="justify-contend-end">
+        <ion-button (click)="applyScheduler()">Übernehmen</ion-button>
+      </ion-row>
+    </ng-container>
+  </ion-grid>
 </ion-content>

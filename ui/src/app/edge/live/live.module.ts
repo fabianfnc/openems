@@ -7,6 +7,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { ChannelthresholdComponent } from './channelthreshold/channelthreshold.component';
 import { ChpSocComponent } from './chpsoc/chpsoc.component';
 import { ChpsocModalComponent } from './chpsoc/chpsoc-modal/modal.page';
+import { ConfigModalComponent } from './redlight/configmodal/configmodal.component';
 import { ConsumptionComponent } from './consumption/consumption.component';
 import { ConsumptionModalComponent } from './consumption/modal/modal.component';
 import { EnergymonitorModule } from './energymonitor/energymonitor.module';
@@ -25,10 +26,12 @@ import { ModalComponentEvcsCluster } from './evcsCluster/modal/evcsCluster-modal
 import { ModbusApiComponent } from './modbusapi/modbusapi.component';
 import { NgModule } from '@angular/core';
 import { OfflineComponent } from './offline/offline.component';
+import { PickScheduleDateComponent } from './redlight/pickscheduledate/pickscheduledate.component';
 import { ProductionComponent } from './production/production.component';
 import { ProductionModalComponent } from './production/modal/modal.component';
 import { RedlightComponent } from './redlight/redlight.component';
 import { RedlightModalComponent } from './redlight/modal/modal.component';
+import { RepeatComponent } from './redlight/repeat/repeat.component';
 import { ScheduleComponent } from './redlight/schedule/schedule.component';
 import { SelfConsumptionComponent } from './selfconsumption/selfconsumption.component';
 import { SelfconsumptionModalComponent } from './selfconsumption/modal/modal.component';
@@ -52,14 +55,17 @@ import { SymmetricPeakshavingModalComponent } from './peakshaving/symmetric/moda
     AutarchyModalComponent,
     ChpsocModalComponent,
     ChpsocModalComponent,
+    ConfigModalComponent,
     ConsumptionModalComponent,
     EvcsModalComponent,
     EvcsPopoverComponent,
     FixDigitalOutputModalComponent,
     GridModalComponent,
     ModalComponentEvcsCluster,
+    PickScheduleDateComponent,
     ProductionModalComponent,
     RedlightModalComponent,
+    RepeatComponent,
     ScheduleComponent,
     SelfconsumptionModalComponent,
     SinglethresholdModalComponent,
@@ -74,6 +80,7 @@ import { SymmetricPeakshavingModalComponent } from './peakshaving/symmetric/moda
     ChannelthresholdComponent,
     ChpSocComponent,
     ChpsocModalComponent,
+    ConfigModalComponent,
     ConsumptionComponent,
     ConsumptionModalComponent,
     EvcsChart,
@@ -91,10 +98,12 @@ import { SymmetricPeakshavingModalComponent } from './peakshaving/symmetric/moda
     ModalComponentEvcsCluster,
     ModbusApiComponent,
     OfflineComponent,
+    PickScheduleDateComponent,
     ProductionComponent,
     ProductionModalComponent,
     RedlightComponent,
     RedlightModalComponent,
+    RepeatComponent,
     ScheduleComponent,
     SelfConsumptionComponent,
     SelfconsumptionModalComponent,
