@@ -1,8 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { ModalController, PopoverController } from '@ionic/angular';
 import { Service } from '../../../../shared/shared';
 import { ScheduleComponent } from '../schedule/schedule.component';
 import { isUndefined } from 'util';
+import { DefaultTypes } from 'src/app/shared/service/defaulttypes';
 
 @Component({
   selector: RedlightModalComponent.SELECTOR,
@@ -10,10 +11,11 @@ import { isUndefined } from 'util';
 })
 export class RedlightModalComponent {
 
+  @Input() public schedulers: { name: string, date: DefaultTypes.HistoryPeriod, repeat: string }[];
+
   private static readonly SELECTOR = "redlight-modal";
 
   public isOn: boolean = true;
-  public scheduledArray = [];
 
   constructor(
     public modalCtrl: ModalController,
@@ -31,18 +33,18 @@ export class RedlightModalComponent {
     console.log("neuer Modus: ", newMode)
   }
 
-  async presentPopover(ev: any) {
-    const popover = await this.popoverController.create({
+  async presentModal(ev: any) {
+    const modal = await this.modalCtrl.create({
       component: ScheduleComponent,
-      event: ev,
-      translucent: true,
-      cssClass: 'schedule-popover',
+      componentProps: {
+        schedulers: this.schedulers
+      },
     });
-    popover.onDidDismiss().then((result) => {
+    modal.onDidDismiss().then((result) => {
       if (!isUndefined(result.data)) {
-        this.scheduledArray.push(1);
+        this.schedulers = result.data;
       }
     });
-    return await popover.present();
+    return await modal.present();
   }
 }

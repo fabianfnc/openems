@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { ModalController, PopoverController } from '@ionic/angular';
 import { Service } from '../../../../shared/shared';
 import { TranslateService } from '@ngx-translate/core';
@@ -7,6 +7,7 @@ import { DefaultTypes } from 'src/app/shared/service/defaulttypes';
 import { isUndefined } from 'util';
 import { RepeatComponent } from '../repeat/repeat.component';
 import { ConfigModalComponent } from '../configmodal/configmodal.component';
+import { format, getDay, isSameDay, subDays, getHours, getMinutes, getTime, setHours, setMinutes, parseISO, startOfDay, endOfDay } from 'date-fns';
 
 @Component({
   selector: ScheduleComponent.SELECTOR,
@@ -14,15 +15,18 @@ import { ConfigModalComponent } from '../configmodal/configmodal.component';
 })
 export class ScheduleComponent {
 
+  @Input() public schedulers: { name: string, date: DefaultTypes.HistoryPeriod, repeat: string }[];
+
   private static readonly SELECTOR = "schedule";
-  public scheduleDate: DefaultTypes.HistoryPeriod = null;
+  public scheduleDate: DefaultTypes.HistoryPeriod = new DefaultTypes.HistoryPeriod();
   public setDate: string = "Datum festlegen";
   public changeDate: string = "Datum ändern";
   public allDay: boolean = true;
   public repeat: string = "Nie";
+  public name: string = "scheduler1"
   public isConfigSet: boolean = false;
-  public scheduledArray = [];
   public setScheduler: boolean = null;
+  public schedulerName: string = "Scheduler";
 
   constructor(
     public modalCtrl: ModalController,
@@ -32,13 +36,25 @@ export class ScheduleComponent {
   ) { }
 
   ngOnInit() {
-    console.log(this.setScheduler)
-    if (this.scheduledArray.length > 0) {
+    if (this.schedulers.length > 0) {
       this.setScheduler = false;
     } else {
       this.setScheduler = true;
     }
-    console.log(this.setScheduler)
+    this.scheduleDate.from = startOfDay(this.scheduleDate.from);
+    this.scheduleDate.to = endOfDay(this.scheduleDate.to);
+    console.log("date", this.scheduleDate)
+    this.schedulerName = "Scheduler" + (this.schedulers.length + 1).toString();
+  }
+
+  updateVonTime(event) {
+    let vonDate = new Date(parseISO(event.detail.value))
+    let hours = vonDate.getHours();
+    let minutes = vonDate.getMinutes();
+    console.log("origin von", this.scheduleDate.from)
+    this.scheduleDate.from.setHours(hours);
+    this.scheduleDate.from.setMinutes(minutes);
+    console.log("new von", this.scheduleDate.from)
   }
 
   async presentDatePopover(ev: any) {
@@ -50,7 +66,6 @@ export class ScheduleComponent {
     });
     popover.onDidDismiss().then((result) => {
       if (!isUndefined(result.data)) {
-        this.scheduleDate = new DefaultTypes.HistoryPeriod();
         this.scheduleDate.from = result.data.from;
         this.scheduleDate.to = result.data.to;
       }
@@ -88,6 +103,12 @@ export class ScheduleComponent {
   }
 
   applyScheduler() {
-    this.popoverController.dismiss(1);
+    this.schedulers.push({ name: this.schedulerName, date: this.scheduleDate, repeat: this.repeat });
+    this.modalCtrl.dismiss(this.schedulers);
+  }
+
+  removeScheduler() {
+    this.setScheduler = true;
+    this.schedulers.pop()
   }
 }

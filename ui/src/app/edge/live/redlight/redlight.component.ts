@@ -3,6 +3,8 @@ import { RedlightModalComponent } from './modal/modal.component';
 import { Component } from '@angular/core';
 import { Edge, Service } from '../../../shared/shared';
 import { ModalController, PopoverController } from '@ionic/angular';
+import { isUndefined } from 'util';
+import { DefaultTypes } from 'src/app/shared/service/defaulttypes';
 
 @Component({
   selector: RedlightComponent.SELECTOR,
@@ -11,6 +13,7 @@ import { ModalController, PopoverController } from '@ionic/angular';
 export class RedlightComponent {
 
   private static readonly SELECTOR = "redlight";
+  public schedulers: { name: string, date: DefaultTypes.HistoryPeriod, repeat: string }[] = [];
 
   private edge: Edge = null;
 
@@ -30,6 +33,14 @@ export class RedlightComponent {
   async presentModal() {
     const modal = await this.modalCtrl.create({
       component: RedlightModalComponent,
+      componentProps: {
+        schedulers: this.schedulers
+      },
+    });
+    modal.onDidDismiss().then((result) => {
+      if (!isUndefined(result.data)) {
+        this.schedulers = result.data;
+      }
     });
     return await modal.present();
   }

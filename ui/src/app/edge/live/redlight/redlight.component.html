@@ -2,6 +2,9 @@
     <ion-item lines="full" color="light">
         <ion-icon slot="start" size="large" color="primary" name="power"></ion-icon>
         <ion-label>Redlight</ion-label>
+        <ng-container *ngIf="schedulers.length > 0">
+            <ion-icon color="success" size="large" name="alarm"></ion-icon>
+        </ng-container>
     </ion-item>
 
     <ion-card-content>
