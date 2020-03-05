@@ -15,7 +15,7 @@ import { format, getDay, isSameDay, subDays, getHours, getMinutes, getTime, setH
 })
 export class ScheduleComponent {
 
-  @Input() public schedulers: { name: string, date: DefaultTypes.HistoryPeriod, repeat: string }[];
+  @Input() public schedulers: { name: string, date: DefaultTypes.HistoryPeriod, repeat: string, allDay: boolean }[];
 
   private static readonly SELECTOR = "schedule";
   public scheduleDate: DefaultTypes.HistoryPeriod = new DefaultTypes.HistoryPeriod();
@@ -103,12 +103,14 @@ export class ScheduleComponent {
   }
 
   applyScheduler() {
-    this.schedulers.push({ name: this.schedulerName, date: this.scheduleDate, repeat: this.repeat });
+    this.schedulers.push({ name: this.schedulerName, date: this.scheduleDate, repeat: this.repeat, allDay: this.allDay });
     this.modalCtrl.dismiss(this.schedulers);
   }
 
-  removeScheduler() {
-    this.setScheduler = true;
-    this.schedulers.pop()
+  removeScheduler(index) {
+    this.schedulers.splice(index, 1)
+    if (this.schedulers.length == 0) {
+      this.setScheduler = true;
+    }
   }
 }

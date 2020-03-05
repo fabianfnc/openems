@@ -15,16 +15,19 @@
 <ion-content>
   <ng-container *ngIf="setScheduler == false">
     <ion-grid style="height: 100%;">
-      <ng-container *ngFor="let item of schedulers">
+      <ng-container *ngFor="let item of schedulers; let i = index">
         <ion-item lines="full">
           <ion-label>
-            {{ item.name }}
-            <ion-note>
-              testomesto
-            </ion-note>
+            <h2>{{ item.name }}</h2>
+            <p>{{ item.date.from.toLocaleDateString() }}<span
+                *ngIf="item.allDay == false">&nbsp;{{ item.date.from.getHours() }}:{{ item.date.from.getMinutes() }}</span>
+              - {{ item.date.to.toLocaleDateString() }}<span
+                *ngIf="item.allDay == false">&nbsp;{{ item.date.to.getHours() }}:{{ item.date.to.getMinutes() }}</span>,
+              Wiederholen:
+              {{ item.repeat }}</p>
           </ion-label>
           <ion-icon slot="end" name="settings"></ion-icon>
-          <ion-icon slot="end" (click)="removeScheduler()" name="close"></ion-icon>
+          <ion-icon slot="end" (click)="removeScheduler(i)" name="close"></ion-icon>
         </ion-item>
       </ng-container>
       <ion-row class="ion-justify-content-center ion-padding-top">

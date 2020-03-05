@@ -11,7 +11,7 @@ import { DefaultTypes } from 'src/app/shared/service/defaulttypes';
 })
 export class RedlightModalComponent {
 
-  @Input() public schedulers: { name: string, date: DefaultTypes.HistoryPeriod, repeat: string }[];
+  @Input() public schedulers: { name: string, date: DefaultTypes.HistoryPeriod, repeat: string, allDay: boolean }[];
 
   private static readonly SELECTOR = "redlight-modal";
 

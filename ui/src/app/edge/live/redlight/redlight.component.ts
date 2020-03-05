@@ -13,7 +13,7 @@ import { DefaultTypes } from 'src/app/shared/service/defaulttypes';
 export class RedlightComponent {
 
   private static readonly SELECTOR = "redlight";
-  public schedulers: { name: string, date: DefaultTypes.HistoryPeriod, repeat: string }[] = [];
+  public schedulers: { name: string, date: DefaultTypes.HistoryPeriod, repeat: string, allDay: boolean }[] = [];
 
   private edge: Edge = null;
 

@@ -42,6 +42,8 @@ import { StorageComponent } from './storage/storage.component';
 import { StorageModalComponent } from './storage/modal/modal.component';
 import { SymmetricPeakshavingComponent } from './peakshaving/symmetric/symmetricpeakshaving.component';
 import { SymmetricPeakshavingModalComponent } from './peakshaving/symmetric/modal/modal.component';
+import { SchedulewidgetComponent } from './schedulewidget/schedulewidget.component';
+import { SchedulewidgetModalComponent } from './schedulewidget/modal/modal.component';
 
 @NgModule({
   imports: [
@@ -67,6 +69,7 @@ import { SymmetricPeakshavingModalComponent } from './peakshaving/symmetric/moda
     RedlightModalComponent,
     RepeatComponent,
     ScheduleComponent,
+    SchedulewidgetModalComponent,
     SelfconsumptionModalComponent,
     SinglethresholdModalComponent,
     StorageModalComponent,
@@ -105,6 +108,8 @@ import { SymmetricPeakshavingModalComponent } from './peakshaving/symmetric/moda
     RedlightModalComponent,
     RepeatComponent,
     ScheduleComponent,
+    SchedulewidgetComponent,
+    SchedulewidgetModalComponent,
     SelfConsumptionComponent,
     SelfconsumptionModalComponent,
     SinglethresholdComponent,
