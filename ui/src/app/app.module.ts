@@ -25,6 +25,7 @@ import { ChartOptionsPopoverComponent } from './shared/chartoptions/popover/popo
 import { PickDatePopoverComponent } from './shared/pickdate/popover/popover.component';
 import { SharedModule } from './shared/shared.module';
 import { Language } from './shared/translate/language';
+import { NgCalendarModule } from 'ionic2-calendar';
 
 @NgModule({
   declarations: [
@@ -54,6 +55,7 @@ import { Language } from './shared/translate/language';
     AboutModule,
     SettingsModule,
     EdgeModule,
+    NgCalendarModule,
     EdgeSettingsModule,
     IndexModule,
     TranslateModule.forRoot({

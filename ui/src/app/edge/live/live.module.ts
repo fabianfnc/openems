@@ -44,6 +44,8 @@ import { SymmetricPeakshavingComponent } from './peakshaving/symmetric/symmetric
 import { SymmetricPeakshavingModalComponent } from './peakshaving/symmetric/modal/modal.component';
 import { SchedulewidgetComponent } from './schedulewidget/schedulewidget.component';
 import { SchedulewidgetModalComponent } from './schedulewidget/modal/modal.component';
+import { NgCalendarModule } from 'ionic2-calendar';
+import { ActiveschedulersComponent } from './schedulewidget/activeschedulers/activeschedulers.component';
 
 @NgModule({
   imports: [
@@ -51,6 +53,7 @@ import { SchedulewidgetModalComponent } from './schedulewidget/modal/modal.compo
     BrowserModule,
     EnergymonitorModule,
     SharedModule,
+    NgCalendarModule,
   ],
   entryComponents: [
     AsymmetricPeakshavingModalComponent,
@@ -74,8 +77,10 @@ import { SchedulewidgetModalComponent } from './schedulewidget/modal/modal.compo
     SinglethresholdModalComponent,
     StorageModalComponent,
     SymmetricPeakshavingModalComponent,
+    ActiveschedulersComponent,
   ],
   declarations: [
+    ActiveschedulersComponent,
     AsymmetricPeakshavingComponent,
     AsymmetricPeakshavingModalComponent,
     AutarchyComponent,

@@ -1,0 +1,24 @@
+<ion-header>
+  <ion-toolbar class="ion-justify-content-center" color="primary">
+    <ion-title>Aktive Scheduler</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="modalCtrl.dismiss()">
+        <ion-icon name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <calendar [monthviewDisplayEventTemplate]="template" [eventSource]="eventSource" [markDisabled]="markDisabled"
+    [calendarMode]="calendar.mode" [currentDate]="calendar.currentDate"
+    (onCurrentDateChanged)="onCurrentDateChanged($event)" (onEventSelected)="onEventSelected($event)"
+    (onTitleChanged)="onViewTitleChanged($event)" (onTimeSelected)="onTimeSelected($event)" step="30">
+  </calendar>
+  <ng-template #template let-view="view" let-row="row" let-col="col">
+    <div *ngIf="view.dates[row*7+col].events == ''">{{view.dates[row*7+col].label}}</div>
+    <div *ngFor="let obj of view.dates[row*7+col].events">
+      <p [ngStyle]="{'background': obj.eventColor } ">{{view.dates[row*7+col].label}}</p>
+    </div>
+  </ng-template>
+</ion-content>
