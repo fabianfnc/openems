@@ -9,41 +9,9 @@
   </ion-toolbar>
 </ion-header>
 
+<!-- Info Text -->
 <ion-content>
-  <ng-container *ngIf="setScheduler == false">
-    <ion-grid style="height: 100%;">
-      <ng-container *ngFor="let item of schedulers; let i = index">
-        <ion-item>
-          <ion-icon slot="start" size="large" color="primary" name="power"></ion-icon>
-          <ion-label>
-            <h2>{{item.name}}</h2>
-            <h3 class="ion-text-wrap">{{ item.date.from.toLocaleDateString() }}<span
-                *ngIf="item.allDay == false">&nbsp;{{ item.date.from.getHours() }}:{{ item.date.from.getMinutes() }}</span>
-              - {{ item.date.to.toLocaleDateString() }}<span
-                *ngIf="item.allDay == false">&nbsp;{{ item.date.to.getHours() }}:{{ item.date.to.getMinutes() }}</span>
-            </h3>
-            <p>Wiederholen:
-              {{ item.repeat }}</p>
-          </ion-label>
-          <ion-icon (mouseover)="item.hoverConfig=true" (mouseleave)="item.hoverConfig=false"
-            [color]="item.hoverConfig == true ? 'success':''" slot="end" size="large" style="cursor: pointer;"
-            name="settings">
-          </ion-icon>
-          <ion-icon (mouseover)="item.hoverRemove=true" (mouseleave)="item.hoverRemove=false"
-            [color]="item.hoverRemove == true ? 'success':''" slot="end" size="large" style="cursor: pointer;"
-            (click)="removeScheduler(i)" name="close">
-          </ion-icon>
-
-        </ion-item>
-      </ng-container>
-      <ion-row class="ion-justify-content-center ion-padding-top">
-        <ion-button (click)="setScheduler = true">
-          neuer scheduler
-        </ion-button>
-      </ion-row>
-    </ion-grid>
-  </ng-container>
-  <ion-grid *ngIf="setScheduler == true || setScheduler == null">
+  <ion-grid>
     <table class="full_width">
       <tr>
         <td style="width: 50%">
@@ -107,7 +75,7 @@
     </ion-row>
   </ion-grid>
 </ion-content>
-<ion-fab *ngIf="setScheduler == true || setScheduler == null" vertical="bottom" horizontal="end" slot="fixed">
+<ion-fab vertical="bottom" horizontal="end" slot="fixed">
   <ion-fab-button (click)="applyScheduler()">
     <ion-icon size="large" name="checkmark-circle-outline">
     </ion-icon>

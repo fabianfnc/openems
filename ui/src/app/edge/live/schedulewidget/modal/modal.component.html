@@ -10,9 +10,80 @@
 </ion-header>
 
 <ion-content>
-  <ion-grid class="ion-padding-top">
+  <ion-grid>
     <ion-row class="ion-align-items-center ion-justify-content-center">
-      <ion-button (click)="presentModal()">aktive scheduler</ion-button>
+      <ion-button (click)="presentModalActiveSchedulers()">aktive scheduler</ion-button>
     </ion-row>
+    <ion-list>
+      <ion-list-header>
+        Konfigurierte Scheduler
+      </ion-list-header>
+
+      <ion-item>
+        <ion-icon slot="start" size="large" color="primary" name="power"></ion-icon>
+        <ion-label>
+          <h2>Redlight1</h2>
+          <h3 class="ion-text-wrap">09.03.2020 13:30 - 10.03.2020 16:00</h3>
+          <p>Wiederholen: Täglich</p>
+        </ion-label>
+        <ion-icon style="cursor: pointer;" slot="end" (mouseover)="hover2=true" (mouseleave)="hover2=false"
+          [color]="hover2 == true ? 'success':''" size="large" name="settings"></ion-icon>
+        <ion-icon (mouseover)="hover3=true" (mouseleave)="hover3=false" [color]="hover3 == true ? 'success':''"
+          slot="end" size="large" style="cursor: pointer;" name="close">
+        </ion-icon>
+      </ion-item>
+
+      <ng-container *ngFor="let item of schedulers; let i = index">
+        <ion-item>
+          <ion-icon slot="start" size="large" color="primary" name="battery-charging"></ion-icon>
+          <ion-label>
+            <h2>{{item.name}}</h2>
+            <h3 class="ion-text-wrap">{{ item.date.from.toLocaleDateString() }}<span
+                *ngIf="item.allDay == false">&nbsp;{{ item.date.from.getHours() }}:{{ item.date.from.getMinutes() }}</span>
+              - {{ item.date.to.toLocaleDateString() }}<span
+                *ngIf="item.allDay == false">&nbsp;{{ item.date.to.getHours() }}:{{ item.date.to.getMinutes() }}</span>
+            </h3>
+            <p>Wiederholen:
+              {{ item.repeat }}</p>
+          </ion-label>
+          <ion-icon (mouseover)="item.hoverConfig=true" (mouseleave)="item.hoverConfig=false"
+            [color]="item.hoverConfig == true ? 'success':''" slot="end" size="large" style="cursor: pointer;"
+            name="settings">
+          </ion-icon>
+          <ion-icon (mouseover)="item.hoverRemove=true" (mouseleave)="item.hoverRemove=false"
+            [color]="item.hoverRemove == true ? 'success':''" slot="end" size="large" style="cursor: pointer;"
+            (click)="removeScheduler(i)" name="close">
+          </ion-icon>
+
+        </ion-item>
+
+      </ng-container>
+
+    </ion-list>
+    <ion-list>
+      <ion-list-header>
+        Verfügbare sonstige Scheduler
+      </ion-list-header>
+
+      <ion-item>
+        <ion-icon slot="start" name="battery-charging" size="large"></ion-icon>
+        <ion-label>
+          <h2>Zwangsbeladung</h2>
+        </ion-label>
+        <ion-icon (click)="presentModalAddOtherWidgets()" style="cursor: pointer;" (mouseover)="hover0=true"
+          (mouseleave)="hover0=false" [color]="hover0 == true ? 'success':''" name="add-circle-outline" size="large">
+        </ion-icon>
+      </ion-item>
+
+      <ion-item>
+        <ion-icon slot="start" name="beer" size="large"></ion-icon>
+        <ion-label>
+          <h2>Eigenverbrauch</h2>
+        </ion-label>
+        <ion-icon (click)="presentModalAddOtherWidgets()" style="cursor: pointer;" (mouseover)="hover1=true"
+          (mouseleave)="hover1=false" [color]="hover1 == true ? 'success':''" name="add-circle-outline" size="large">
+        </ion-icon>
+      </ion-item>
+    </ion-list>
   </ion-grid>
 </ion-content>

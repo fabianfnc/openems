@@ -46,6 +46,10 @@ import { SchedulewidgetComponent } from './schedulewidget/schedulewidget.compone
 import { SchedulewidgetModalComponent } from './schedulewidget/modal/modal.component';
 import { NgCalendarModule } from 'ionic2-calendar';
 import { ActiveschedulersComponent } from './schedulewidget/activeschedulers/activeschedulers.component';
+import { AddOtherWidgetComponent } from './schedulewidget/addotherwidget/addotherwidget.component';
+import { RepeatSchedulerComponent } from './schedulewidget/repeat/repeat.component';
+import { PickScheduleScheduleDateComponent } from './schedulewidget/pickscheduledate/pickscheduledate.component';
+import { ConfigOtherModalComponent } from './schedulewidget/configmodal/configmodal.component';
 
 @NgModule({
   imports: [
@@ -56,11 +60,14 @@ import { ActiveschedulersComponent } from './schedulewidget/activeschedulers/act
     NgCalendarModule,
   ],
   entryComponents: [
+    ActiveschedulersComponent,
+    AddOtherWidgetComponent,
     AsymmetricPeakshavingModalComponent,
     AutarchyModalComponent,
     ChpsocModalComponent,
     ChpsocModalComponent,
     ConfigModalComponent,
+    ConfigOtherModalComponent,
     ConsumptionModalComponent,
     EvcsModalComponent,
     EvcsPopoverComponent,
@@ -68,19 +75,21 @@ import { ActiveschedulersComponent } from './schedulewidget/activeschedulers/act
     GridModalComponent,
     ModalComponentEvcsCluster,
     PickScheduleDateComponent,
+    PickScheduleScheduleDateComponent,
     ProductionModalComponent,
     RedlightModalComponent,
     RepeatComponent,
+    RepeatSchedulerComponent,
     ScheduleComponent,
     SchedulewidgetModalComponent,
     SelfconsumptionModalComponent,
     SinglethresholdModalComponent,
     StorageModalComponent,
     SymmetricPeakshavingModalComponent,
-    ActiveschedulersComponent,
   ],
   declarations: [
     ActiveschedulersComponent,
+    AddOtherWidgetComponent,
     AsymmetricPeakshavingComponent,
     AsymmetricPeakshavingModalComponent,
     AutarchyComponent,
@@ -89,6 +98,7 @@ import { ActiveschedulersComponent } from './schedulewidget/activeschedulers/act
     ChpSocComponent,
     ChpsocModalComponent,
     ConfigModalComponent,
+    ConfigOtherModalComponent,
     ConsumptionComponent,
     ConsumptionModalComponent,
     EvcsChart,
@@ -107,11 +117,13 @@ import { ActiveschedulersComponent } from './schedulewidget/activeschedulers/act
     ModbusApiComponent,
     OfflineComponent,
     PickScheduleDateComponent,
+    PickScheduleScheduleDateComponent,
     ProductionComponent,
     ProductionModalComponent,
     RedlightComponent,
     RedlightModalComponent,
     RepeatComponent,
+    RepeatSchedulerComponent,
     ScheduleComponent,
     SchedulewidgetComponent,
     SchedulewidgetModalComponent,

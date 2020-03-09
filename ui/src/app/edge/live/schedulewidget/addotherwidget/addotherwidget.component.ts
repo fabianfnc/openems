@@ -1,23 +1,24 @@
 import { Component, Input } from '@angular/core';
 import { ModalController, PopoverController } from '@ionic/angular';
 import { Service } from '../../../../shared/shared';
-import { TranslateService } from '@ngx-translate/core';
-import { PickScheduleDateComponent } from '../pickscheduledate/pickscheduledate.component';
 import { DefaultTypes } from 'src/app/shared/service/defaulttypes';
+import { RepeatSchedulerComponent } from '../repeat/repeat.component';
+import { parseISO, startOfDay, endOfDay } from 'date-fns';
+import { PickScheduleScheduleDateComponent } from '../pickscheduledate/pickscheduledate.component';
 import { isUndefined } from 'util';
-import { RepeatComponent } from '../repeat/repeat.component';
-import { ConfigModalComponent } from '../configmodal/configmodal.component';
-import { format, getDay, isSameDay, subDays, getHours, getMinutes, getTime, setHours, setMinutes, parseISO, startOfDay, endOfDay } from 'date-fns';
+import { ConfigOtherModalComponent } from '../configmodal/configmodal.component';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
-  selector: ScheduleComponent.SELECTOR,
-  templateUrl: './schedule.component.html'
+  selector: AddOtherWidgetComponent.SELECTOR,
+  templateUrl: './addotherwidget.component.html'
 })
-export class ScheduleComponent {
+export class AddOtherWidgetComponent {
 
-  @Input() public schedulers: { name: string, date: DefaultTypes.HistoryPeriod, repeat: string, allDay: boolean, hoverConfig?: boolean, hoverRemove?: boolean }[];
+  @Input() public schedulers: { name: string, date: DefaultTypes.HistoryPeriod, repeat: string, allDay: boolean }[];
 
-  private static readonly SELECTOR = "schedule";
+  private static readonly SELECTOR = "addotherwidget";
+
   public scheduleDate: DefaultTypes.HistoryPeriod = new DefaultTypes.HistoryPeriod();
   public setDate: string = "Datum festlegen";
   public changeDate: string = "Datum ändern";
@@ -30,34 +31,19 @@ export class ScheduleComponent {
   public hovers: boolean[] = [];
   public hovers1: boolean[] = []
 
+
   constructor(
     public modalCtrl: ModalController,
-    public service: Service,
     public popoverController: PopoverController,
-    public translate: TranslateService,
+    public service: Service,
+    public translate: TranslateService
   ) { }
 
   ngOnInit() {
-    if (this.schedulers.length > 0) {
-      this.setScheduler = false;
-    } else {
-      this.setScheduler = true;
-    }
-    this.schedulers.forEach((element, index) => {
-      let hover: boolean = false;
-      this.schedulers[index].hoverConfig = false;
-      this.schedulers[index].hoverRemove = false;
-    })
     this.scheduleDate.from = startOfDay(this.scheduleDate.from);
     this.scheduleDate.to = endOfDay(this.scheduleDate.to);
     console.log("date", this.scheduleDate)
     this.schedulerName = "Scheduler" + (this.schedulers.length + 1).toString();
-  }
-
-  ngOnDestroy() {
-    // this.schedulers.forEach((element, index) => {
-    //   this.schedulers[index].hover
-    // })
   }
 
   updateVonTime(event) {
@@ -72,7 +58,7 @@ export class ScheduleComponent {
 
   async presentDatePopover(ev: any) {
     const popover = await this.popoverController.create({
-      component: PickScheduleDateComponent,
+      component: PickScheduleScheduleDateComponent,
       event: ev,
       translucent: true,
       cssClass: 'pickdate-popover',
@@ -88,7 +74,7 @@ export class ScheduleComponent {
 
   async presentRepeatPopover(ev: any) {
     const popover = await this.popoverController.create({
-      component: RepeatComponent,
+      component: RepeatSchedulerComponent,
       event: ev,
       translucent: true,
       cssClass: 'pickdate-popover',
@@ -103,7 +89,7 @@ export class ScheduleComponent {
 
   async presentConfigModal() {
     const modal = await this.modalCtrl.create({
-      component: ConfigModalComponent,
+      component: ConfigOtherModalComponent,
     });
     modal.onDidDismiss().then((result) => {
       if (!isUndefined(result.data)) {
@@ -118,12 +104,5 @@ export class ScheduleComponent {
   applyScheduler() {
     this.schedulers.push({ name: this.schedulerName, date: this.scheduleDate, repeat: this.repeat, allDay: this.allDay });
     this.modalCtrl.dismiss(this.schedulers);
-  }
-
-  removeScheduler(index) {
-    this.schedulers.splice(index, 1)
-    if (this.schedulers.length == 0) {
-      this.setScheduler = true;
-    }
   }
 }
