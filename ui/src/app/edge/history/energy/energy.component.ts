@@ -7,7 +7,7 @@ import { Component, Input, OnChanges } from '@angular/core';
 import { debounceTime, delay, takeUntil } from 'rxjs/operators';
 import { DefaultTypes } from 'src/app/shared/service/defaulttypes';
 import { EnergyModalComponent } from './modal/modal.component';
-import { format, isSameDay, isSameMonth, isSameYear } from 'date-fns';
+import { format, isSameDay, isSameMonth, isSameYear, getDate } from 'date-fns';
 import { formatNumber } from '@angular/common';
 import { fromEvent, Subject } from 'rxjs';
 import { ModalController } from '@ionic/angular';
@@ -59,13 +59,12 @@ export class EnergyComponent extends AbstractHistoryChart implements OnChanges {
         new ChannelAddress('_sum', 'ConsumptionActivePower')
       ];
       let energyChannels = [
-        // new ChannelAddress('_sum', 'EssSoc'),
-        // new ChannelAddress('_sum', 'GridBuyActiveEnergy'),
-        // new ChannelAddress('_sum', 'GridSellActiveEnergy'),
-        // new ChannelAddress('_sum', 'ProductionActiveEnergy'),
-        // new ChannelAddress('_sum', 'ConsumptionActiveEnergy'),
-        // new ChannelAddress('_sum', 'EssActiveChargeEnergy'),
-        // new ChannelAddress('_sum', 'EssActiveDischargeEnergy')
+        new ChannelAddress('_sum', 'GridBuyActiveEnergy'),
+        new ChannelAddress('_sum', 'GridSellActiveEnergy'),
+        new ChannelAddress('_sum', 'ProductionActiveEnergy'),
+        new ChannelAddress('_sum', 'ConsumptionActiveEnergy'),
+        new ChannelAddress('_sum', 'EssActiveChargeEnergy'),
+        new ChannelAddress('_sum', 'EssActiveDischargeEnergy')
       ];
       edge.sendRequest(this.websocket, new QueryHistoricTimeseriesExportXlxsRequest(this.service.historyPeriod.from, this.service.historyPeriod.to, dataChannels, energyChannels)).then(response => {
         let r = response as Base64PayloadResponse;
@@ -118,10 +117,11 @@ export class EnergyComponent extends AbstractHistoryChart implements OnChanges {
       this.service.getCurrentEdge().then(edge => {
         this.service.getConfig().then(config => {
           let result = (response as QueryHistoricTimeseriesDataResponse).result;
-
+          console.log("result", result)
           // convert labels
-          let labels: Date[] = [];
+          let labels: any[] = [];
           for (let timestamp of result.timestamps) {
+            // console.log("timestamps", getDate(new Date(timestamp)))
             labels.push(new Date(timestamp));
           }
           this.labels = labels;
@@ -133,113 +133,8 @@ export class EnergyComponent extends AbstractHistoryChart implements OnChanges {
             this.convertDeprecatedData(config, result.data); // TODO deprecated
           }
 
-          // push data for right y-axis
-          if ('_sum/EssSoc' in result.data) {
-            let socData = result.data['_sum/EssSoc'].map(value => {
-              if (value == null) {
-                return null
-              } else if (value > 100 || value < 0) {
-                return null;
-              } else {
-                return value;
-              }
-            })
-            datasets.push({
-              label: this.translate.instant('General.soc'),
-              data: socData,
-              hidden: false,
-              yAxisID: 'yAxis2',
-              position: 'right',
-              borderDash: [10, 10]
-            })
-            this.colors.push({
-              backgroundColor: 'rgba(189, 195, 199,0.05)',
-              borderColor: 'rgba(189, 195, 199,1)',
-            })
-          }
-
-          // push data for left y-axis
-          if ('_sum/ProductionActivePower' in result.data) {
-            /*
-            * Production
-            */
-            let productionData = result.data['_sum/ProductionActivePower'].map(value => {
-              if (value == null) {
-                return null
-              } else {
-                return value / 1000; // convert to kW
-              }
-            });
-
-            datasets.push({
-              label: this.translate.instant('General.production'),
-              data: productionData,
-              hidden: false,
-              yAxisID: 'yAxis1',
-              position: 'left'
-            });
-            this.colors.push({
-              backgroundColor: 'rgba(45,143,171,0.05)',
-              borderColor: 'rgba(45,143,171,1)'
-            })
-          }
-
-          if ('_sum/GridActivePower' in result.data) {
-            /*
-             * Buy From Grid
-             */
-            let buyFromGridData = result.data['_sum/GridActivePower'].map(value => {
-              if (value == null) {
-                return null
-              } else if (value > 0) {
-                return value / 1000; // convert to kW
-              } else {
-                return 0;
-              }
-            });
-
-            datasets.push({
-              label: this.translate.instant('General.gridBuy'),
-              data: buyFromGridData,
-              hidden: false,
-              yAxisID: 'yAxis1',
-              position: 'left'
-            });
-            this.colors.push({
-              backgroundColor: 'rgba(0,0,0,0.05)',
-              borderColor: 'rgba(0,0,0,1)'
-            })
-
-            /*
-            * Sell To Grid
-            */
-            let sellToGridData = result.data['_sum/GridActivePower'].map(value => {
-              if (value == null) {
-                return null
-              } else if (value < 0) {
-                return value / -1000; // convert to kW and invert value
-              } else {
-                return 0;
-              }
-            });
-            datasets.push({
-              label: this.translate.instant('General.gridSell'),
-              data: sellToGridData,
-              hidden: false,
-              yAxisID: 'yAxis1',
-              position: 'left'
-            });
-            this.colors.push({
-              backgroundColor: 'rgba(0,0,200,0.05)',
-              borderColor: 'rgba(0,0,200,1)',
-            })
-          }
-
-          if ('_sum/ConsumptionActivePower' in result.data) {
-            /*
-            * Consumption
-             */
-            let consumptionData = result.data['_sum/ConsumptionActivePower'].map(value => {
+          if ('_sum/ConsumptionActiveEnergy' in result.data) {
+            let consumptionData = result.data['_sum/ConsumptionActiveEnergy'].map(value => {
               if (value == null) {
                 return null
               } else {
@@ -254,67 +149,193 @@ export class EnergyComponent extends AbstractHistoryChart implements OnChanges {
               position: 'left'
             });
             this.colors.push({
-              backgroundColor: 'rgba(253,197,7,0.05)',
+              backgroundColor: 'rgba(253,197,7,1)',
               borderColor: 'rgba(253,197,7,1)',
             })
           }
 
-          if ('_sum/EssActivePower' in result.data) {
-            /*
-             * Storage Charge
-             */
-            let effectivePower;
-            if ('_sum/ProductionDcActualPower' in result.data && result.data['_sum/ProductionDcActualPower'].length > 0) {
-              effectivePower = result.data['_sum/ProductionDcActualPower'].map((value, index) => {
-                return Utils.subtractSafely(result.data['_sum/EssActivePower'][index], value);
-              });
-            } else {
-              effectivePower = result.data['_sum/EssActivePower'];
-            }
-            let chargeData = effectivePower.map(value => {
-              if (value == null) {
-                return null
-              } else if (value < 0) {
-                return value / -1000; // convert to kW;
-              } else {
-                return 0;
-              }
-            });
-            datasets.push({
-              label: this.translate.instant('General.chargePower'),
-              data: chargeData,
-              hidden: false,
-              yAxisID: 'yAxis1',
-              position: 'left'
-            });
-            this.colors.push({
-              backgroundColor: 'rgba(0,223,0,0.05)',
-              borderColor: 'rgba(0,223,0,1)',
-            })
-            /*
-             * Storage Discharge
-             */
-            let dischargeData = effectivePower.map(value => {
-              if (value == null) {
-                return null
-              } else if (value > 0) {
-                return value / 1000; // convert to kW
-              } else {
-                return 0;
-              }
-            });
-            datasets.push({
-              label: this.translate.instant('General.dischargePower'),
-              data: dischargeData,
-              hidden: false,
-              yAxisID: 'yAxis1',
-              position: 'left'
-            });
-            this.colors.push({
-              backgroundColor: 'rgba(200,0,0,0.05)',
-              borderColor: 'rgba(200,0,0,1)',
-            })
-          }
+          // push data for right y-axis
+          // if ('_sum/EssSoc' in result.data) {
+          //   let socData = result.data['_sum/EssSoc'].map(value => {
+          //     if (value == null) {
+          //       return null
+          //     } else if (value > 100 || value < 0) {
+          //       return null;
+          //     } else {
+          //       return value;
+          //     }
+          //   })
+          //   datasets.push({
+          //     label: this.translate.instant('General.soc'),
+          //     data: socData,
+          //     hidden: false,
+          //     yAxisID: 'yAxis2',
+          //     position: 'right',
+          //     borderDash: [10, 10]
+          //   })
+          //   this.colors.push({
+          //     backgroundColor: 'rgba(189, 195, 199,0.05)',
+          //     borderColor: 'rgba(189, 195, 199,1)',
+          //   })
+          // }
+
+          // push data for left y-axis
+          // if ('_sum/ProductionActivePower' in result.data) {
+          //   /*
+          //   * Production
+          //   */
+          //   let productionData = result.data['_sum/ProductionActivePower'].map(value => {
+          //     if (value == null) {
+          //       return null
+          //     } else {
+          //       return value / 1000; // convert to kW
+          //     }
+          //   });
+
+          //   datasets.push({
+          //     label: this.translate.instant('General.production'),
+          //     data: productionData,
+          //     hidden: false,
+          //     yAxisID: 'yAxis1',
+          //     position: 'left'
+          //   });
+          //   this.colors.push({
+          //     backgroundColor: 'rgba(45,143,171,0.05)',
+          //     borderColor: 'rgba(45,143,171,1)'
+          //   })
+          // }
+
+          // if ('_sum/GridActivePower' in result.data) {
+          //   /*
+          //    * Buy From Grid
+          //    */
+          //   let buyFromGridData = result.data['_sum/GridActivePower'].map(value => {
+          //     if (value == null) {
+          //       return null
+          //     } else if (value > 0) {
+          //       return value / 1000; // convert to kW
+          //     } else {
+          //       return 0;
+          //     }
+          //   });
+
+          //   datasets.push({
+          //     label: this.translate.instant('General.gridBuy'),
+          //     data: buyFromGridData,
+          //     hidden: false,
+          //     yAxisID: 'yAxis1',
+          //     position: 'left'
+          //   });
+          //   this.colors.push({
+          //     backgroundColor: 'rgba(0,0,0,0.05)',
+          //     borderColor: 'rgba(0,0,0,1)'
+          //   })
+
+          //   /*
+          //   * Sell To Grid
+          //   */
+          //   let sellToGridData = result.data['_sum/GridActivePower'].map(value => {
+          //     if (value == null) {
+          //       return null
+          //     } else if (value < 0) {
+          //       return value / -1000; // convert to kW and invert value
+          //     } else {
+          //       return 0;
+          //     }
+          //   });
+          //   datasets.push({
+          //     label: this.translate.instant('General.gridSell'),
+          //     data: sellToGridData,
+          //     hidden: false,
+          //     yAxisID: 'yAxis1',
+          //     position: 'left'
+          //   });
+          //   this.colors.push({
+          //     backgroundColor: 'rgba(0,0,200,0.05)',
+          //     borderColor: 'rgba(0,0,200,1)',
+          //   })
+          // }
+
+          // if ('_sum/ConsumptionActivePower' in result.data) {
+          //   /*
+          //   * Consumption
+          //    */
+          //   let consumptionData = result.data['_sum/ConsumptionActivePower'].map(value => {
+          //     if (value == null) {
+          //       return null
+          //     } else {
+          //       return value / 1000; // convert to kW
+          //     }
+          //   });
+          //   datasets.push({
+          //     label: this.translate.instant('General.consumption'),
+          //     data: consumptionData,
+          //     hidden: false,
+          //     yAxisID: 'yAxis1',
+          //     position: 'left'
+          //   });
+          //   this.colors.push({
+          //     backgroundColor: 'rgba(253,197,7,0.05)',
+          //     borderColor: 'rgba(253,197,7,1)',
+          //   })
+          // }
+
+          // if ('_sum/EssActivePower' in result.data) {
+          //   /*
+          //    * Storage Charge
+          //    */
+          //   let effectivePower;
+          //   if ('_sum/ProductionDcActualPower' in result.data && result.data['_sum/ProductionDcActualPower'].length > 0) {
+          //     effectivePower = result.data['_sum/ProductionDcActualPower'].map((value, index) => {
+          //       return Utils.subtractSafely(result.data['_sum/EssActivePower'][index], value);
+          //     });
+          //   } else {
+          //     effectivePower = result.data['_sum/EssActivePower'];
+          //   }
+          //   let chargeData = effectivePower.map(value => {
+          //     if (value == null) {
+          //       return null
+          //     } else if (value < 0) {
+          //       return value / -1000; // convert to kW;
+          //     } else {
+          //       return 0;
+          //     }
+          //   });
+          //   datasets.push({
+          //     label: this.translate.instant('General.chargePower'),
+          //     data: chargeData,
+          //     hidden: false,
+          //     yAxisID: 'yAxis1',
+          //     position: 'left'
+          //   });
+          //   this.colors.push({
+          //     backgroundColor: 'rgba(0,223,0,0.05)',
+          //     borderColor: 'rgba(0,223,0,1)',
+          //   })
+          //   /*
+          //    * Storage Discharge
+          //    */
+          //   let dischargeData = effectivePower.map(value => {
+          //     if (value == null) {
+          //       return null
+          //     } else if (value > 0) {
+          //       return value / 1000; // convert to kW
+          //     } else {
+          //       return 0;
+          //     }
+          //   });
+          //   datasets.push({
+          //     label: this.translate.instant('General.dischargePower'),
+          //     data: dischargeData,
+          //     hidden: false,
+          //     yAxisID: 'yAxis1',
+          //     position: 'left'
+          //   });
+          //   this.colors.push({
+          //     backgroundColor: 'rgba(200,0,0,0.05)',
+          //     borderColor: 'rgba(200,0,0,1)',
+          //   })
+          // }
           this.datasets = datasets;
           this.loading = false;
         }).catch(reason => {
@@ -338,26 +359,32 @@ export class EnergyComponent extends AbstractHistoryChart implements OnChanges {
     return new Promise((resolve) => {
       if (edge.isVersionAtLeast('2018.8')) {
         let result: ChannelAddress[] = [];
-        config.widgets.classes.forEach(clazz => {
-          switch (clazz.toString()) {
-            case 'Grid':
-              result.push(new ChannelAddress('_sum', 'GridActivePower'));
-              break;
-            case 'Consumption':
-              result.push(new ChannelAddress('_sum', 'ConsumptionActivePower'));
-              break;
-            case 'Storage':
-              result.push(new ChannelAddress('_sum', 'EssSoc'))
-              result.push(new ChannelAddress('_sum', 'EssActivePower'));
-              break;
-            case 'Production':
-              result.push(
-                new ChannelAddress('_sum', 'ProductionActivePower'),
-                new ChannelAddress('_sum', 'ProductionDcActualPower'));
-              break;
-          };
-          return false;
-        });
+        // config.widgets.classes.forEach(clazz => {
+        //   switch (clazz.toString()) {
+        //     case 'Grid':
+        //       result.push(new ChannelAddress('_sum', 'GridActivePower'));
+        //       break;
+        //     case 'Consumption':
+        //       result.push(new ChannelAddress('_sum', 'ConsumptionActivePower'));
+        //       break;
+        //     case 'Storage':
+        //       result.push(new ChannelAddress('_sum', 'EssSoc'))
+        //       result.push(new ChannelAddress('_sum', 'EssActivePower'));
+        //       break;
+        //     case 'Production':
+        //       result.push(
+        //         new ChannelAddress('_sum', 'ProductionActivePower'),
+        //         new ChannelAddress('_sum', 'ProductionDcActualPower'));
+        //       break;
+        //   };
+        //   return false;
+        // });
+        result.push(new ChannelAddress('_sum', 'GridBuyActiveEnergy'));
+        result.push(new ChannelAddress('_sum', 'GridSellActiveEnergy'));
+        result.push(new ChannelAddress('_sum', 'ProductionActiveEnergy'));
+        result.push(new ChannelAddress('_sum', 'ConsumptionActiveEnergy'));
+        result.push(new ChannelAddress('_sum', 'EssActiveChargeEnergy'));
+        result.push(new ChannelAddress('_sum', 'EssActiveDischargeEnergy'));
         resolve(result);
 
       } else {
@@ -422,6 +449,7 @@ export class EnergyComponent extends AbstractHistoryChart implements OnChanges {
     options.scales.yAxes[0].scaleLabel.padding = -2;
     options.scales.yAxes[0].scaleLabel.fontSize = 11;
     options.scales.yAxes[0].ticks.padding = -5;
+    options.scales.xAxes[0].time.minUnit = "day";
     options.tooltips.callbacks.label = function (tooltipItem: TooltipItem, data: Data) {
       let label = data.datasets[tooltipItem.datasetIndex].label;
       let value = tooltipItem.yLabel;
