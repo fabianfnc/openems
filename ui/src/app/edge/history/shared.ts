@@ -90,7 +90,8 @@ export type ChartOptions = {
                     quarter: string,
                     year: string
                 }
-            }
+            },
+            stacked: boolean
         }]
     },
     tooltips: {
@@ -150,7 +151,8 @@ export const DEFAULT_TIME_CHART_OPTIONS: ChartOptions = {
                     quarter: '[Q]Q - YYYY', // Q3
                     year: 'YYYY' // 2015
                 }
-            }
+            },
+            stacked: false,
         }]
     },
     tooltips: {
