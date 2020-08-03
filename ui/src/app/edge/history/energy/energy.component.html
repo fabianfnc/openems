@@ -9,12 +9,7 @@
     </ion-button>
   </ion-item>
   <ion-card-content>
-    <div [style.height.px]="getChartHeight()">
-      <ngx-loading [show]="loading"></ngx-loading>
-      <ng-container *ngIf="!loading">
-        <canvas baseChart [datasets]="datasets" [labels]="labels" [options]="options" [colors]="colors"
-          chartType="line"></canvas>
-      </ng-container>
-    </div>
+    <canvas id="myChart" width="700" height="400"></canvas>
+    <!-- <canvas baseChart [datasets]="datasets" [labels]="labels" [options]="options" chartType="bar"></canvas> -->
   </ion-card-content>
 </ion-card>

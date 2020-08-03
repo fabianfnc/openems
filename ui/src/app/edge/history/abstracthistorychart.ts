@@ -19,8 +19,8 @@ export abstract class AbstractHistoryChart {
 
     private ngUnsubscribe: Subject<void> = new Subject<void>();
 
-    protected labels: Date[] = [];
-    protected datasets: Dataset[] = EMPTY_DATASET;
+    protected labels = [];
+    protected datasets = [];
     protected options: ChartOptions;
     protected colors = []
 

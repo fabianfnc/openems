@@ -15,6 +15,8 @@ import { QueryHistoricTimeseriesDataResponse } from '../../../shared/jsonrpc/res
 import { QueryHistoricTimeseriesExportXlxsRequest } from 'src/app/shared/jsonrpc/request/queryHistoricTimeseriesExportXlxs';
 import { TranslateService } from '@ngx-translate/core';
 import * as FileSaver from 'file-saver';
+import * as Chart from 'chart.js'
+import ChartDataLabels from 'chartjs-plugin-datalabels';
 
 @Component({
   selector: 'energy',
@@ -22,13 +24,16 @@ import * as FileSaver from 'file-saver';
 })
 export class EnergyComponent extends AbstractHistoryChart implements OnChanges {
 
+  canvas: any;
+  ctx: any;
+
   private static readonly EXCEL_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
   private static readonly EXCEL_EXTENSION = '.xlsx';
 
   @Input() private period: DefaultTypes.HistoryPeriod;
 
   ngOnChanges() {
-    this.updateChart();
+    // this.updateChart();
   };
 
   constructor(
@@ -102,10 +107,50 @@ export class EnergyComponent extends AbstractHistoryChart implements OnChanges {
   }
 
   ngOnInit() {
-    this.service.setCurrentComponent('', this.route);
+    this.canvas = document.getElementById('myChart');
+    this.ctx = this.canvas.getContext('2d');
+    let myChart = new Chart(this.ctx, {
+      type: 'bar',
+      data: {
+        labels: ["1900", "1950", "1999", "2050"],
+        datasets: [
+          {
+            label: "Africa",
+            backgroundColor: "#3e95cd",
+            data: [1133, 1221, 1783, 1978],
+            stack: 'Stack 0',
+          }, {
+            label: "Europe",
+            backgroundColor: "#8e5ea2",
+            data: [1408, 1547, 1675, 1734],
+            stack: 'Stack 0'
+          },
+          {
+            label: "Asia",
+            backgroundColor: "#518b5b",
+            data: [1208, 1347, 1475, 1534],
+            stack: 'Stack 1',
+          },
+          {
+            label: "America",
+            backgroundColor: "#FFFF00",
+            data: [1108, 1247, 1375, 1434],
+            stack: 'Stack 1',
+          }
+        ]
+      },
+      options: {
+        scales: {
+          xAxes: [{
+            stacked: true
+          }],
+        }
+      }
+    });
+    // this.service.setCurrentComponent('', this.route);
     // Timeout is used to prevent ExpressionChangedAfterItHasBeenCheckedError
-    setTimeout(() => this.getChartHeight(), 500);
-    this.subscribeChartRefresh()
+    // setTimeout(() => this.getChartHeight(), 500);
+    // this.subscribeChartRefresh()
   }
 
   ngOnDestroy() {
@@ -113,225 +158,263 @@ export class EnergyComponent extends AbstractHistoryChart implements OnChanges {
   }
 
   protected updateChart() {
-    this.loading = true;
-    this.queryHistoricTimeseriesData(this.period.from, this.period.to).then(response => {
-      this.service.getCurrentEdge().then(edge => {
-        this.service.getConfig().then(config => {
-          let result = (response as QueryHistoricTimeseriesDataResponse).result;
+    console.log("CHECK")
+    let labels = ["1900", "1902", "1903", "1904"];
+    let datasets = [
+      {
+        label: "Africa",
+        backgroundColor: "#3e95cd",
+        data: [1133, 1221, 1783, 2478],
+        hidden: false,
+        datalabels: {
+          align: 'end',
+          anchor: 'start'
+        }
+      }, {
+        label: "Europe",
+        backgroundColor: "#8e5ea2",
+        data: [1408, 1547, 1675, 1734],
+        hidden: false,
+        datalabels: {
+          align: 'end',
+          anchor: 'center'
+        }
+      }
+      , {
+        label: "Asia",
+        backgroundColor: "#8e5ea2",
+        data: [1208, 1347, 1475, 1534],
+        hidden: false,
+        datalabels: {
+          align: 'end',
+          anchor: 'end'
+        }
+      }
+    ];
+    this.labels = labels;
+    this.datasets = datasets;
+    let options = <ChartOptions>Utils.deepCopy(DEFAULT_TIME_CHART_OPTIONS);
+    // options.scales.xAxes[0].stacked = true;
+    this.options = options;
+    // this.loading = true;
+    // this.queryHistoricTimeseriesData(this.period.from, this.period.to).then(response => {
+    //   this.service.getCurrentEdge().then(edge => {
+    //     this.service.getConfig().then(config => {
+    //       let result = (response as QueryHistoricTimeseriesDataResponse).result;
 
-          // convert labels
-          let labels: Date[] = [];
-          for (let timestamp of result.timestamps) {
-            labels.push(new Date(timestamp));
-          }
-          this.labels = labels;
+    //       // convert labels
+    //       let labels: Date[] = [];
+    //       for (let timestamp of result.timestamps) {
+    //         labels.push(new Date(timestamp));
+    //       }
+    //       this.labels = labels;
 
-          // convert datasets
-          let datasets = [];
+    //       // convert datasets
+    //       let datasets = [];
 
-          if (!edge.isVersionAtLeast('2018.8')) {
-            this.convertDeprecatedData(config, result.data); // TODO deprecated
-          }
+    //       if (!edge.isVersionAtLeast('2018.8')) {
+    //         this.convertDeprecatedData(config, result.data); // TODO deprecated
+    //       }
 
-          // push data for right y-axis
-          if ('_sum/EssSoc' in result.data) {
-            let socData = result.data['_sum/EssSoc'].map(value => {
-              if (value == null) {
-                return null
-              } else if (value > 100 || value < 0) {
-                return null;
-              } else {
-                return value;
-              }
-            })
-            datasets.push({
-              label: this.translate.instant('General.soc'),
-              data: socData,
-              hidden: false,
-              yAxisID: 'yAxis2',
-              position: 'right',
-              borderDash: [10, 10]
-            })
-            this.colors.push({
-              backgroundColor: 'rgba(189, 195, 199,0.05)',
-              borderColor: 'rgba(189, 195, 199,1)',
-            })
-          }
+    //       // push data for right y-axis
+    //       if ('_sum/EssSoc' in result.data) {
+    //         let socData = result.data['_sum/EssSoc'].map(value => {
+    //           if (value == null) {
+    //             return null
+    //           } else if (value > 100 || value < 0) {
+    //             return null;
+    //           } else {
+    //             return value;
+    //           }
+    //         })
+    //         datasets.push({
+    //           label: this.translate.instant('General.soc'),
+    //           data: socData,
+    //           hidden: false,
+    //           yAxisID: 'yAxis2',
+    //           position: 'right',
+    //           borderDash: [10, 10]
+    //         })
+    //         this.colors.push({
+    //           backgroundColor: 'rgba(189, 195, 199,0.05)',
+    //           borderColor: 'rgba(189, 195, 199,1)',
+    //         })
+    //       }
 
-          // push data for left y-axis
-          if ('_sum/ProductionActivePower' in result.data) {
-            /*
-            * Production
-            */
-            let productionData = result.data['_sum/ProductionActivePower'].map(value => {
-              if (value == null) {
-                return null
-              } else {
-                return value / 1000; // convert to kW
-              }
-            });
+    //       // push data for left y-axis
+    //       if ('_sum/ProductionActivePower' in result.data) {
+    //         /*
+    //         * Production
+    //         */
+    //         let productionData = result.data['_sum/ProductionActivePower'].map(value => {
+    //           if (value == null) {
+    //             return null
+    //           } else {
+    //             return value / 1000; // convert to kW
+    //           }
+    //         });
 
-            datasets.push({
-              label: this.translate.instant('General.production'),
-              data: productionData,
-              hidden: false,
-              yAxisID: 'yAxis1',
-              position: 'left'
-            });
-            this.colors.push({
-              backgroundColor: 'rgba(45,143,171,0.05)',
-              borderColor: 'rgba(45,143,171,1)'
-            })
-          }
+    //         datasets.push({
+    //           label: this.translate.instant('General.production'),
+    //           data: productionData,
+    //           hidden: false,
+    //           yAxisID: 'yAxis1',
+    //           position: 'left'
+    //         });
+    //         this.colors.push({
+    //           backgroundColor: 'rgba(45,143,171,0.05)',
+    //           borderColor: 'rgba(45,143,171,1)'
+    //         })
+    //       }
 
-          if ('_sum/GridActivePower' in result.data) {
-            /*
-             * Buy From Grid
-             */
-            let buyFromGridData = result.data['_sum/GridActivePower'].map(value => {
-              if (value == null) {
-                return null
-              } else if (value > 0) {
-                return value / 1000; // convert to kW
-              } else {
-                return 0;
-              }
-            });
+    //       if ('_sum/GridActivePower' in result.data) {
+    //         /*
+    //          * Buy From Grid
+    //          */
+    //         let buyFromGridData = result.data['_sum/GridActivePower'].map(value => {
+    //           if (value == null) {
+    //             return null
+    //           } else if (value > 0) {
+    //             return value / 1000; // convert to kW
+    //           } else {
+    //             return 0;
+    //           }
+    //         });
 
-            datasets.push({
-              label: this.translate.instant('General.gridBuy'),
-              data: buyFromGridData,
-              hidden: false,
-              yAxisID: 'yAxis1',
-              position: 'left'
-            });
-            this.colors.push({
-              backgroundColor: 'rgba(0,0,0,0.05)',
-              borderColor: 'rgba(0,0,0,1)'
-            })
+    //         datasets.push({
+    //           label: this.translate.instant('General.gridBuy'),
+    //           data: buyFromGridData,
+    //           hidden: false,
+    //           yAxisID: 'yAxis1',
+    //           position: 'left'
+    //         });
+    //         this.colors.push({
+    //           backgroundColor: 'rgba(0,0,0,0.05)',
+    //           borderColor: 'rgba(0,0,0,1)'
+    //         })
 
-            /*
-            * Sell To Grid
-            */
-            let sellToGridData = result.data['_sum/GridActivePower'].map(value => {
-              if (value == null) {
-                return null
-              } else if (value < 0) {
-                return value / -1000; // convert to kW and invert value
-              } else {
-                return 0;
-              }
-            });
-            datasets.push({
-              label: this.translate.instant('General.gridSell'),
-              data: sellToGridData,
-              hidden: false,
-              yAxisID: 'yAxis1',
-              position: 'left'
-            });
-            this.colors.push({
-              backgroundColor: 'rgba(0,0,200,0.05)',
-              borderColor: 'rgba(0,0,200,1)',
-            })
-          }
+    //         /*
+    //         * Sell To Grid
+    //         */
+    //         let sellToGridData = result.data['_sum/GridActivePower'].map(value => {
+    //           if (value == null) {
+    //             return null
+    //           } else if (value < 0) {
+    //             return value / -1000; // convert to kW and invert value
+    //           } else {
+    //             return 0;
+    //           }
+    //         });
+    //         datasets.push({
+    //           label: this.translate.instant('General.gridSell'),
+    //           data: sellToGridData,
+    //           hidden: false,
+    //           yAxisID: 'yAxis1',
+    //           position: 'left'
+    //         });
+    //         this.colors.push({
+    //           backgroundColor: 'rgba(0,0,200,0.05)',
+    //           borderColor: 'rgba(0,0,200,1)',
+    //         })
+    //       }
 
-          if ('_sum/ConsumptionActivePower' in result.data) {
-            /*
-            * Consumption
-             */
-            let consumptionData = result.data['_sum/ConsumptionActivePower'].map(value => {
-              if (value == null) {
-                return null
-              } else {
-                return value / 1000; // convert to kW
-              }
-            });
-            datasets.push({
-              label: this.translate.instant('General.consumption'),
-              data: consumptionData,
-              hidden: false,
-              yAxisID: 'yAxis1',
-              position: 'left'
-            });
-            this.colors.push({
-              backgroundColor: 'rgba(253,197,7,0.05)',
-              borderColor: 'rgba(253,197,7,1)',
-            })
-          }
+    //       if ('_sum/ConsumptionActivePower' in result.data) {
+    //         /*
+    //         * Consumption
+    //          */
+    //         let consumptionData = result.data['_sum/ConsumptionActivePower'].map(value => {
+    //           if (value == null) {
+    //             return null
+    //           } else {
+    //             return value / 1000; // convert to kW
+    //           }
+    //         });
+    //         datasets.push({
+    //           label: this.translate.instant('General.consumption'),
+    //           data: consumptionData,
+    //           hidden: false,
+    //           yAxisID: 'yAxis1',
+    //           position: 'left'
+    //         });
+    //         this.colors.push({
+    //           backgroundColor: 'rgba(253,197,7,0.05)',
+    //           borderColor: 'rgba(253,197,7,1)',
+    //         })
+    //       }
 
-          if ('_sum/EssActivePower' in result.data) {
-            /*
-             * Storage Charge
-             */
-            let effectivePower;
-            if ('_sum/ProductionDcActualPower' in result.data && result.data['_sum/ProductionDcActualPower'].length > 0) {
-              effectivePower = result.data['_sum/ProductionDcActualPower'].map((value, index) => {
-                return Utils.subtractSafely(result.data['_sum/EssActivePower'][index], value);
-              });
-            } else {
-              effectivePower = result.data['_sum/EssActivePower'];
-            }
-            let chargeData = effectivePower.map(value => {
-              if (value == null) {
-                return null
-              } else if (value < 0) {
-                return value / -1000; // convert to kW;
-              } else {
-                return 0;
-              }
-            });
-            datasets.push({
-              label: this.translate.instant('General.chargePower'),
-              data: chargeData,
-              hidden: false,
-              yAxisID: 'yAxis1',
-              position: 'left'
-            });
-            this.colors.push({
-              backgroundColor: 'rgba(0,223,0,0.05)',
-              borderColor: 'rgba(0,223,0,1)',
-            })
-            /*
-             * Storage Discharge
-             */
-            let dischargeData = effectivePower.map(value => {
-              if (value == null) {
-                return null
-              } else if (value > 0) {
-                return value / 1000; // convert to kW
-              } else {
-                return 0;
-              }
-            });
-            datasets.push({
-              label: this.translate.instant('General.dischargePower'),
-              data: dischargeData,
-              hidden: false,
-              yAxisID: 'yAxis1',
-              position: 'left'
-            });
-            this.colors.push({
-              backgroundColor: 'rgba(200,0,0,0.05)',
-              borderColor: 'rgba(200,0,0,1)',
-            })
-          }
-          this.datasets = datasets;
-          this.loading = false;
-        }).catch(reason => {
-          console.error(reason); // TODO error message
-          this.initializeChart();
-          return;
-        });
-      }).catch(reason => {
-        console.error(reason); // TODO error message
-        this.initializeChart();
-        return;
-      });
-    }).catch(reason => {
-      console.error(reason); // TODO error message
-      this.initializeChart();
-      return;
-    });
+    //       if ('_sum/EssActivePower' in result.data) {
+    //         /*
+    //          * Storage Charge
+    //          */
+    //         let effectivePower;
+    //         if ('_sum/ProductionDcActualPower' in result.data && result.data['_sum/ProductionDcActualPower'].length > 0) {
+    //           effectivePower = result.data['_sum/ProductionDcActualPower'].map((value, index) => {
+    //             return Utils.subtractSafely(result.data['_sum/EssActivePower'][index], value);
+    //           });
+    //         } else {
+    //           effectivePower = result.data['_sum/EssActivePower'];
+    //         }
+    //         let chargeData = effectivePower.map(value => {
+    //           if (value == null) {
+    //             return null
+    //           } else if (value < 0) {
+    //             return value / -1000; // convert to kW;
+    //           } else {
+    //             return 0;
+    //           }
+    //         });
+    //         datasets.push({
+    //           label: this.translate.instant('General.chargePower'),
+    //           data: chargeData,
+    //           hidden: false,
+    //           yAxisID: 'yAxis1',
+    //           position: 'left'
+    //         });
+    //         this.colors.push({
+    //           backgroundColor: 'rgba(0,223,0,0.05)',
+    //           borderColor: 'rgba(0,223,0,1)',
+    //         })
+    //         /*
+    //          * Storage Discharge
+    //          */
+    //         let dischargeData = effectivePower.map(value => {
+    //           if (value == null) {
+    //             return null
+    //           } else if (value > 0) {
+    //             return value / 1000; // convert to kW
+    //           } else {
+    //             return 0;
+    //           }
+    //         });
+    //         datasets.push({
+    //           label: this.translate.instant('General.dischargePower'),
+    //           data: dischargeData,
+    //           hidden: false,
+    //           yAxisID: 'yAxis1',
+    //           position: 'left'
+    //         });
+    //         this.colors.push({
+    //           backgroundColor: 'rgba(200,0,0,0.05)',
+    //           borderColor: 'rgba(200,0,0,1)',
+    //         })
+    //       }
+    //       this.datasets = datasets;
+    //       this.loading = false;
+    //     }).catch(reason => {
+    //       console.error(reason); // TODO error message
+    //       this.initializeChart();
+    //       return;
+    //     });
+    //   }).catch(reason => {
+    //     console.error(reason); // TODO error message
+    //     this.initializeChart();
+    //     return;
+    //   });
+    // }).catch(reason => {
+    //   console.error(reason); // TODO error message
+    //   this.initializeChart();
+    //   return;
+    // });
   }
 
   protected getChannelAddresses(edge: Edge, config: EdgeConfig): Promise<ChannelAddress[]> {
@@ -394,44 +477,21 @@ export class EnergyComponent extends AbstractHistoryChart implements OnChanges {
   }
 
   protected setLabel() {
-    let translate = this.translate;
-    let options = <ChartOptions>Utils.deepCopy(DEFAULT_TIME_CHART_OPTIONS);
+    // let translate = this.translate;
+    // let options = <ChartOptions>Utils.deepCopy(DEFAULT_TIME_CHART_OPTIONS);
 
-    // adds second y-axis to chart
-    options.scales.yAxes.push({
-      id: 'yAxis2',
-      position: 'right',
-      scaleLabel: {
-        display: true,
-        labelString: "%",
-        padding: -2,
-        fontSize: 11
-      },
-      gridLines: {
-        display: false
-      },
-      ticks: {
-        beginAtZero: true,
-        max: 100,
-        padding: -5,
-        stepSize: 20
-      }
-    })
-    options.scales.yAxes[0].id = "yAxis1"
-    options.scales.yAxes[0].scaleLabel.labelString = "kW";
-    options.scales.yAxes[0].scaleLabel.padding = -2;
-    options.scales.yAxes[0].scaleLabel.fontSize = 11;
-    options.scales.yAxes[0].ticks.padding = -5;
-    options.tooltips.callbacks.label = function (tooltipItem: TooltipItem, data: Data) {
-      let label = data.datasets[tooltipItem.datasetIndex].label;
-      let value = tooltipItem.yLabel;
-      if (label == translate.instant('General.soc')) {
-        return label + ": " + formatNumber(value, 'de', '1.0-0') + " %";
-      } else {
-        return label + ": " + formatNumber(value, 'de', '1.0-2') + " kW";
-      }
-    }
-    this.options = options;
+    // console.log("JAWOLLJA")
+    // options.scales.yAxes[0].id = "yAxis1"
+    // options.scales.yAxes[0].scaleLabel.labelString = "kWh";
+    // options.scales.yAxes[0].scaleLabel.padding = -2;
+    // options.scales.yAxes[0].scaleLabel.fontSize = 11;
+    // options.scales.yAxes[0].ticks.padding = -5;
+    // options.tooltips.callbacks.label = function (tooltipItem: TooltipItem, data: Data) {
+    //   let label = data.datasets[tooltipItem.datasetIndex].label;
+    //   let value = tooltipItem.yLabel;
+    //   return label + ": " + formatNumber(value, 'de', '1.0-2') + " kW";
+    // }
+    // this.options = options;
   }
 
   private getAsymmetric(ids: string[], ignoreIds: string[]): ChannelAddress[] {
