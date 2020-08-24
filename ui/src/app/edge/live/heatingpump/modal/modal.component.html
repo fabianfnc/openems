@@ -36,16 +36,232 @@
     </ion-segment>
   </ion-card-content>
   <!-- Manual Mode -->
-  <ion-card-content *ngIf="controllerMode == 'Manual'" class="underline">
-    <table class="full_width">
-      <tr>
-        <ion-range (ionChange)="updatePumpMode($event)" min="1" max="4" step="1" [value]="pumpMode" snaps>
-        </ion-range>
-      </tr>
-    </table>
-  </ion-card-content>
+  <ng-container *ngIf="controllerMode == 'Manual'">
+    <ion-card-content class="underline">
+      <ion-list>
+        <ion-item class="ion-no-padding" style="cursor: pointer;" (click)="updatePumpMode('Einschaltbefehl')"
+          lines="none">
+          <ion-label class="regularFont">Einschaltbefehl</ion-label>
+          <ion-toggle [checked]="pumpMode == 'Einschaltbefehl'"></ion-toggle>
+        </ion-item>
+        <ion-item class="ion-no-padding" style="cursor: pointer;" (click)="updatePumpMode('Einschaltempfehlung')"
+          lines="none">
+          <ion-label class="regularFont">Einschaltempfehlung</ion-label>
+          <ion-toggle [checked]="pumpMode == 'Einschaltempfehlung'"></ion-toggle>
+        </ion-item>
+        <ion-item class="ion-no-padding" style="cursor: pointer;" (click)="updatePumpMode('Normalbetrieb')"
+          lines="none">
+          <ion-label class="regularFont">Normalbetrieb</ion-label>
+          <ion-toggle [checked]="pumpMode == 'Normalbetrieb'"></ion-toggle>
+        </ion-item>
+        <ion-item class="ion-no-padding" style="cursor: pointer;" (click)="updatePumpMode('Sperre')" lines="none">
+          <ion-label class="regularFont">Sperre</ion-label>
+          <ion-toggle [checked]="pumpMode == 'Sperre'"></ion-toggle>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+    <ion-card-content>
+      <ng-container [ngSwitch]="pumpMode">
+        <ion-text class="ion-text-center ion-text-wrap">
+          <ng-container *ngSwitchCase="'Einschaltbefehl'">
+            <p>
+              Hierbei handelt es sich um einen definitiven Anlaufbefehl, insofern dieser im Rahmen der
+              Regeleinstellungen
+              möglich ist.
+              Für diesen Betriebszustand müssen für verschiedene Tarif- und Nutzungsmodelle verschiedene
+              Regelungsmodelle
+              am Regler einstellbar sein:
+            </p>
+            <br>
+            <p>
+              Variante 1: Die Wärmepumpe (Verdichter) wird aktiv eingeschaltet.
+            </p>
+            <p>
+              Variante 2: Die Wärmepumpe (Verdichter und elektrische Zusatzheizungen) wird aktiv eingeschaltet,
+              optional:
+              höhere Temperatur in den Wärmespeichern
+            </p>
+          </ng-container>
+          <ng-container *ngSwitchCase="'Einschaltempfehlung'">
+            <p>
+              In diesem Betriebszustand läuft die Wärmepumpe innerhalb des Reglers im verstärkten Betrieb für
+              Raumheizung
+              und Warmwasserbereitung.
+            </p>
+            <br>
+            <p>Es handelt sich dabei nicht um einen definitiven Anlaufbefehl, sondern um eine
+              Einschaltempfehlung entsprechend der heutigen Anhebung.
+            </p>
+          </ng-container>
+          <ng-container *ngSwitchCase="'Normalbetrieb'">
+            <p>
+              In dieser Schaltung läuft die Wärmepumpe im energieffizienten Normalbetrieb mit anteiliger
+              Wärmespeicher-Füllung für die maximal zweistündige EVU-Sperre.
+            </p>
+          </ng-container>
+          <ng-container *ngSwitchCase="'Sperre'">
+            <p>
+              Dieser Betriebszustand ist abwärtskompatibel zur häufig zu festen Uhrzeiten geschalteten EVU-Sperre und
+              umfasst
+              maximal 2 Stunden „harte“ Sperrzeit.
+            </p>
+          </ng-container>
+        </ion-text>
+      </ng-container>
+    </ion-card-content>
+  </ng-container>
   <!-- Automatic Mode -->
-  <ion-card-content *ngIf="controllerMode == 'Auto'" class="underline">
-    DAS IST DER AUTOMATISCHE MODE
-  </ion-card-content>
+  <ng-container *ngIf="controllerMode == 'Auto'">
+    <ion-card-content class="underline">
+      <ion-item class="ion-no-padding" style="cursor: pointer;" (click)="updatePumpMode('Einschaltempfehlung')"
+        lines="none">
+        <ion-label class="regularFont">Einschaltempfehlung</ion-label>
+        <ion-toggle class="ion-no-padding-end" [checked]="pumpMode == 'Einschaltempfehlung'"></ion-toggle>
+      </ion-item>
+
+      <table class="full_width" *ngIf="pumpMode == 'Einschaltempfehlung'">
+        <tr>
+          <td style="width: 65%">
+            Ab Überschusseinspeisung von
+          </td>
+          <td style="width: 35%" class="align_right">
+            <ion-item class="ion-no-padding" lines="inset">
+              <ion-input class="regularFont" inputmode="decimal" style="text-align: end;">
+              </ion-input>
+              <ion-label class="regularFont">&nbsp;W</ion-label>
+            </ion-item>
+          </td>
+        </tr>
+      </table>
+    </ion-card-content>
+
+    <ion-card-content class="underline">
+      <ion-item class="ion-no-padding" style="cursor: pointer;" (click)="updatePumpMode('Einschaltbefehl')"
+        lines="none">
+        <ion-label class="regularFont">Einschaltbefehl</ion-label>
+        <ion-toggle class="ion-no-padding-end" [checked]="pumpMode == 'Einschaltbefehl'"></ion-toggle>
+      </ion-item>
+
+      <ng-container *ngIf="pumpMode == 'Einschaltbefehl'">
+        <table class="full_width">
+          <tr>
+            <td style="width: 65%;">
+              Über Ladezustand von</td>
+            <td style="width: 35%" class="align_right ion-padding-end">
+              {{ soc | unitvalue:'%' }}
+            </td>
+          </tr>
+        </table>
+        <table class="full_width">
+          <tr>
+            <ion-range pin color="dark" min="1" max="100" [value]="soc">
+              <ion-label slot="start">
+                {{ 0 | unitvalue:'%' }}
+              </ion-label>
+              <ion-label slot="end">
+                {{ 100 | unitvalue:'%' }}
+              </ion-label>
+            </ion-range>
+          </tr>
+        </table>
+      </ng-container>
+    </ion-card-content>
+
+    <ion-card-content class="underline">
+      <ion-item class="ion-no-padding" style="cursor: pointer;" (click)="updatePumpMode('Sperre')" lines="none">
+        <ion-label class="regularFont">Sperre</ion-label>
+        <ion-toggle class="ion-no-padding-end" [checked]="pumpMode == 'Sperre'"></ion-toggle>
+      </ion-item>
+      <ng-container *ngIf="pumpMode == 'Sperre'">
+        <table class="full_width">
+          <tr>
+            <td style="width: 65%;">
+              Unter Ladezustand von</td>
+            <td style="width: 35%" class="align_right ion-padding-end">
+              {{ soc | unitvalue:'%' }}
+            </td>
+          </tr>
+        </table>
+        <table class="full_width">
+          <tr>
+            <ion-range pin color="dark" min="1" max="100" [value]="soc">
+              <ion-label slot="start">
+                {{ 0 | unitvalue:'%' }}
+              </ion-label>
+              <ion-label slot="end">
+                {{ 100 | unitvalue:'%' }}
+              </ion-label>
+            </ion-range>
+          </tr>
+        </table>
+      </ng-container>
+    </ion-card-content>
+    <ion-card-content class="underline">
+      <table class="full_width">
+        <tr>
+          <td style="width: 65%" translate>
+            Edge.Index.Widgets.Singlethreshold.minSwitchingTime
+          </td>
+          <td style="width: 35%" class="align_right">
+            <ion-item lines="inset" class="ion-no-padding">
+              <ion-input class="regularFont" [value]="minSwitchingTime" inputmode="decimal" style="text-align: end;">
+              </ion-input>
+              <ion-label class="regularFont">&nbsp;s</ion-label>
+            </ion-item>
+          </td>
+        </tr>
+      </table>
+    </ion-card-content>
+    <ion-card-content>
+      <ng-container [ngSwitch]="pumpMode">
+        <ion-text class="ion-text-center ion-text-wrap">
+          <ng-container *ngSwitchCase="'Einschaltbefehl'">
+            <p>
+              Hierbei handelt es sich um einen definitiven Anlaufbefehl, insofern dieser im Rahmen der
+              Regeleinstellungen
+              möglich ist.
+              Für diesen Betriebszustand müssen für verschiedene Tarif- und Nutzungsmodelle verschiedene
+              Regelungsmodelle
+              am Regler einstellbar sein:
+            </p>
+            <br>
+            <p>
+              Variante 1: Die Wärmepumpe (Verdichter) wird aktiv eingeschaltet.
+            </p>
+            <p>
+              Variante 2: Die Wärmepumpe (Verdichter und elektrische Zusatzheizungen) wird aktiv eingeschaltet,
+              optional:
+              höhere Temperatur in den Wärmespeichern
+            </p>
+          </ng-container>
+          <ng-container *ngSwitchCase="'Einschaltempfehlung'">
+            <p>
+              In diesem Betriebszustand läuft die Wärmepumpe innerhalb des Reglers im verstärkten Betrieb für
+              Raumheizung
+              und Warmwasserbereitung.
+            </p>
+            <br>
+            <p>Es handelt sich dabei nicht um einen definitiven Anlaufbefehl, sondern um eine
+              Einschaltempfehlung entsprechend der heutigen Anhebung.
+            </p>
+          </ng-container>
+          <ng-container *ngSwitchCase="'Normalbetrieb'">
+            <p>
+              In dieser Schaltung läuft die Wärmepumpe im energieffizienten Normalbetrieb mit anteiliger
+              Wärmespeicher-Füllung für die maximal zweistündige EVU-Sperre.
+            </p>
+          </ng-container>
+          <ng-container *ngSwitchCase="'Sperre'">
+            <p>
+              Dieser Betriebszustand ist abwärtskompatibel zur häufig zu festen Uhrzeiten geschalteten EVU-Sperre und
+              umfasst
+              maximal 2 Stunden „harte“ Sperrzeit.
+            </p>
+          </ng-container>
+        </ion-text>
+      </ng-container>
+    </ion-card-content>
+
+
+  </ng-container>
 </ion-content>

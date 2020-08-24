@@ -16,6 +16,8 @@ export class HeatingpumpModalComponent {
   public controllerMode: ControllerMode = 'Manual';
   public pumpMode: PumpMode = 'Normalbetrieb';
   public pumpModeValue: Number = null;
+  public soc: number = 50;
+  public minSwitchingTime: number = 20;
 
 
   constructor(
@@ -24,41 +26,18 @@ export class HeatingpumpModalComponent {
   ) { }
 
   ngOnInit() {
-    switch (this.pumpMode) {
-      case 1: {
-        //statements; 
-        break;
-      }
-      case 2: {
-        //statements; 
-        break;
-      }
-    }
   }
 
   updateControllerMode(event: CustomEvent) {
     let oldMode = this.controllerMode;
     let newMode = event.detail.value;
 
-    console.log("oldMode", oldMode);
-    console.log("newMode", newMode);
-
     if (oldMode != newMode) {
-      console.log("anderer mode!", newMode)
       this.controllerMode = newMode;
     }
   }
 
-  updatePumpMode(event: CustomEvent) {
-    let oldMode = this.pumpMode;
-    let newMode = event.detail.value;
-
-    console.log("oldMode", oldMode);
-    console.log("newMode", newMode);
-
-    if (oldMode != newMode) {
-      console.log("anderer mode!", newMode)
-      this.pumpMode = newMode;
-    }
+  updatePumpMode(mode: PumpMode) {
+    this.pumpMode = mode;
   }
 }
