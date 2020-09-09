@@ -300,6 +300,9 @@
     },
     "@ionic/angular-toolkit:page": {
       "styleext": "scss"
+    },
+    "@schematics/angular:application": {
+      "strict": true
     }
   }
 }
