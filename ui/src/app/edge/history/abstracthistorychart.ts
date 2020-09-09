@@ -6,6 +6,7 @@ import { QueryHistoricTimeseriesDataResponse } from "../../shared/jsonrpc/respon
 import { TranslateService } from '@ngx-translate/core';
 import { interval, Subject, fromEvent } from 'rxjs';
 import { takeUntil, debounceTime, delay } from 'rxjs/operators';
+import { Color } from 'ng2-charts';
 
 export abstract class AbstractHistoryChart {
 
@@ -23,7 +24,7 @@ export abstract class AbstractHistoryChart {
     protected labels: Date[] = [];
     protected datasets: Dataset[] = EMPTY_DATASET;
     protected options: ChartOptions;
-    protected colors = []
+    protected colors: Color[] = []
 
     // Colors for Phase 1-3
     protected phase1Color = {
