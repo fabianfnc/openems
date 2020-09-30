@@ -18,6 +18,9 @@ export class HeatingpumpModalComponent {
   public pumpModeValue: Number = null;
   public soc: number = 50;
   public minSwitchingTime: number = 20;
+  public showEmpfehlung: boolean = false;
+  public showBefehl: boolean = false;
+  public showSperre: boolean = false;
 
 
   constructor(

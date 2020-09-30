@@ -60,7 +60,7 @@
         </ion-item>
       </ion-list>
     </ion-card-content>
-    <ion-card-content>
+    <!-- <ion-card-content>
       <ng-container [ngSwitch]="pumpMode">
         <ion-text class="ion-text-center ion-text-wrap">
           <ng-container *ngSwitchCase="'Einschaltbefehl'">
@@ -108,20 +108,27 @@
           </ng-container>
         </ion-text>
       </ng-container>
-    </ion-card-content>
+    </ion-card-content> -->
   </ng-container>
   <!-- Automatic Mode -->
   <ng-container *ngIf="controllerMode == 'Auto'">
     <ion-card-content class="underline">
-      <ion-item class="ion-no-padding" style="cursor: pointer;" (click)="updatePumpMode('Einschaltempfehlung')"
-        lines="none">
-        <ion-label class="regularFont">Einschaltempfehlung</ion-label>
-        <ion-toggle class="ion-no-padding-end" [checked]="pumpMode == 'Einschaltempfehlung'"></ion-toggle>
+      <ion-item class="ion-no-padding" style="cursor: pointer;" lines="none">
+        <ion-label class="regularFont">Einschaltempfehlung
+          <ion-icon style="vertical-align: middle" size="large" color="success" name="checkmark-circle-outline">
+          </ion-icon>
+        </ion-label>
+        <ion-button (click)="showEmpfehlung = !showEmpfehlung">
+          <ion-icon slot="icon-only" name="arrow-down-circle-outline"></ion-icon>
+        </ion-button>
       </ion-item>
 
-      <table class="full_width" *ngIf="pumpMode == 'Einschaltempfehlung'">
+      <table class="full_width" *ngIf="showEmpfehlung == true">
         <tr>
-          <td style="width: 65%">
+          <td style="width: 5%">
+            <ion-checkbox checked="true"></ion-checkbox>
+          </td>
+          <td style="width: 60%">
             Ab Überschusseinspeisung von
           </td>
           <td style="width: 35%" class="align_right">
@@ -136,17 +143,38 @@
     </ion-card-content>
 
     <ion-card-content class="underline">
-      <ion-item class="ion-no-padding" style="cursor: pointer;" (click)="updatePumpMode('Einschaltbefehl')"
-        lines="none">
-        <ion-label class="regularFont">Einschaltbefehl</ion-label>
-        <ion-toggle class="ion-no-padding-end" [checked]="pumpMode == 'Einschaltbefehl'"></ion-toggle>
+      <ion-item class="ion-no-padding" style="cursor: pointer;" lines="none">
+        <ion-label class="regularFont">Einschaltbefehl
+        </ion-label>
+
+        <ion-button (click)="showBefehl = !showBefehl">
+          <ion-icon slot="icon-only" name="arrow-down-circle-outline"></ion-icon>
+        </ion-button>
       </ion-item>
 
-      <ng-container *ngIf="pumpMode == 'Einschaltbefehl'">
+      <ng-container *ngIf="showBefehl == true">
         <table class="full_width">
           <tr>
+            <td style="width: 5%">
+              <ion-checkbox checked="true"></ion-checkbox>
+            </td>
+            <td style="width: 60%">
+              Ab Überschusseinspeisung von
+            </td>
+            <td style="width: 35%" class="align_right">
+              <ion-item class="ion-no-padding" lines="inset">
+                <ion-input class="regularFont" inputmode="decimal" style="text-align: end;">
+                </ion-input>
+                <ion-label class="regularFont">&nbsp;W</ion-label>
+              </ion-item>
+            </td>
+          </tr>
+          <tr>
+            <td style="width: 5%">
+              <!-- <ion-checkbox checked="true"></ion-checkbox> -->
+            </td>
             <td style="width: 65%;">
-              Über Ladezustand von</td>
+              und Über Ladezustand von</td>
             <td style="width: 35%" class="align_right ion-padding-end">
               {{ soc | unitvalue:'%' }}
             </td>
@@ -168,14 +196,37 @@
     </ion-card-content>
 
     <ion-card-content class="underline">
-      <ion-item class="ion-no-padding" style="cursor: pointer;" (click)="updatePumpMode('Sperre')" lines="none">
+      <ion-item class="ion-no-padding" style="cursor: pointer;" lines="none">
         <ion-label class="regularFont">Sperre</ion-label>
-        <ion-toggle class="ion-no-padding-end" [checked]="pumpMode == 'Sperre'"></ion-toggle>
+        <!-- <ion-toggle class="ion-no-padding-end" ></ion-toggle> -->
+        <ion-button (click)="showSperre = !showSperre">
+          <ion-icon slot="icon-only" name="arrow-down-circle-outline"></ion-icon>
+        </ion-button>
       </ion-item>
-      <ng-container *ngIf="pumpMode == 'Sperre'">
+      <ng-container *ngIf="showSperre == true">
         <table class="full_width">
           <tr>
-            <td style="width: 65%;">
+            <td style="width: 5%">
+              <ion-checkbox checked="true"></ion-checkbox>
+            </td>
+            <td style="width: 60%">
+              Ab Netzbezug von
+            </td>
+            <td style="width: 35%" class="align_right">
+              <ion-item class="ion-no-padding" lines="inset">
+                <ion-input class="regularFont" inputmode="decimal" style="text-align: end;">
+                </ion-input>
+                <ion-label class="regularFont">&nbsp;W</ion-label>
+              </ion-item>
+            </td>
+          </tr>
+        </table>
+        <table class="full_width">
+          <tr>
+            <td style="width: 5%">
+              <ion-checkbox checked="true"></ion-checkbox>
+            </td>
+            <td style="width: 60%;">
               Unter Ladezustand von</td>
             <td style="width: 35%" class="align_right ion-padding-end">
               {{ soc | unitvalue:'%' }}
@@ -212,7 +263,7 @@
         </tr>
       </table>
     </ion-card-content>
-    <ion-card-content>
+    <!-- <ion-card-content>
       <ng-container [ngSwitch]="pumpMode">
         <ion-text class="ion-text-center ion-text-wrap">
           <ng-container *ngSwitchCase="'Einschaltbefehl'">
@@ -260,7 +311,7 @@
           </ng-container>
         </ion-text>
       </ng-container>
-    </ion-card-content>
+    </ion-card-content> -->
 
 
   </ng-container>
