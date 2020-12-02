@@ -16,7 +16,7 @@ export class HeatPumpComponent {
   @Input() private componentId: string;
 
   private edge: Edge = null;
-  public component: EdgeConfig.Component = null;
+  public component: EdgeConfig.Component | null = null;
   public status: BehaviorSubject<{ name: string }> = new BehaviorSubject(null);
 
   constructor(

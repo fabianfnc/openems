@@ -1,0 +1,31 @@
+<ng-container *ngIf="service.currentEdge | async as edge">
+    <ng-container *ngIf="(edge.currentData | async)['channel'] as currentData">
+        <ion-card>
+            <ion-item *ngIf="widgetConfig.isImg == true" lines="full" color="light">
+                <ion-avatar slot="start">
+                    <img [src]="widgetConfig.imgUrl">
+                </ion-avatar>
+                <ion-label>{{ widgetConfig.headingText }}</ion-label>
+            </ion-item>
+            <ion-item *ngIf="widgetConfig.isImg == false && component != null" lines="full" color="light">
+                <ion-icon slot="start" [color]="widgetConfig.iconColor" [name]="widgetConfig.iconName"></ion-icon>
+                <ion-label>{{ component.alias }}</ion-label>
+            </ion-item>
+            <ion-card-content>
+                <table class="full_width">
+                    <tr *ngFor="let tableChannel of widgetConfig.tableChannels">
+                        <td style="width: 65%">
+                            {{ tableChannel.text }}
+                        </td>
+                        <td style="width: 35%" class="align_right" *ngIf="tableChannel.hasUnit == true">
+                            {{ currentData[tableChannel.componentId + '/' + tableChannel.channelId] | unitvalue:tableChannel.unit }}
+                        </td>
+                        <td style="width: 35%" class="align_right" *ngIf="tableChannel.hasUnit == false">
+                            {{ currentData[tableChannel.componentId + '/' + tableChannel.channelId] }}
+                        </td>
+                    </tr>
+                </table>
+            </ion-card-content>
+        </ion-card>
+    </ng-container>
+</ng-container>

@@ -1,5 +1,6 @@
 import { Edge } from '../edge/edge';
 import { EdgeConfig } from '../edge/edgeconfig';
+import { ChannelAddress } from './channeladdress';
 
 export enum WidgetClass {
     'Energymonitor',
@@ -33,6 +34,45 @@ export enum WidgetFactory {
 export class Widget {
     name: WidgetNature | WidgetFactory | String;
     componentId: string
+}
+
+// todo: https://stackoverflow.com/questions/51412872/typescript-interface-optional-properties-depending-on-other-property
+export class LiveWidgetConfig {
+    // Header
+    headingText: string;
+    // if isImg == false, use iconName, else use imgUrl
+    isImg: boolean;
+    imgUrl?: string;
+    iconName?: string;
+    iconColor?: string;
+    // channels to subscribe on
+    channels?: ChannelAddress[];
+    // channels which will be shown
+    tableChannels?: OverviewWidgetTable[];
+    // channels which will be shown by components nature
+    tableChannelsByNature?: AdditionalOverviewWidgetTableByNature[];
+    // component id for component based widgets
+    componentId?: string;
+}
+
+export class OverviewWidgetTable {
+    // represents the values descibing text (eg. 'Production AC')
+    text: string;
+    // is needed to identify values for current data on subscribed channels
+    componentId: string;
+    // represents the values (eg. '22')
+    channelId: string;
+    // use unit to represent the unit of the value (eg. kW)
+    hasUnit: boolean;
+    unit?: string;
+}
+
+export class AdditionalOverviewWidgetTableByNature {
+    nature: string;
+    componentId: string;
+    channelId: string;
+    hasUnit: boolean;
+    unit?: string;
 }
 
 export class Widgets {
