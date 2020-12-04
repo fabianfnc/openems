@@ -35,6 +35,16 @@ export class Widget {
     componentId: string
 }
 
+// https://stackoverflow.com/questions/51412872/typescript-interface-optional-properties-depending-on-other-property
+export class WidgetHeaderConfig {
+    translatedHeadingText?: string;
+    componentHeadingText?: string;
+    isImg: boolean;
+    imgUrl?: string;
+    iconName?: string;
+    iconColor?: string;
+}
+
 export class Widgets {
 
     public static parseWidgets(edge: Edge, config: EdgeConfig): Widgets {

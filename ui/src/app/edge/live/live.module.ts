@@ -42,6 +42,7 @@ import { SymmetricPeakshavingComponent } from './peakshaving/symmetric/symmetric
 import { SymmetricPeakshavingModalComponent } from './peakshaving/symmetric/modal/modal.component';
 import { HeatPumpComponent } from './heatpump/heatpump.component';
 import { HeatPumpModalComponent } from './heatpump/modal/modal.component';
+import { ConsumptionComponentNew } from './consumptionnew/consumption.component';
 
 @NgModule({
   imports: [
@@ -80,6 +81,7 @@ import { HeatPumpModalComponent } from './heatpump/modal/modal.component';
     ChannelthresholdComponent,
     ChpSocComponent,
     ChpsocModalComponent,
+    ConsumptionComponentNew,
     ConsumptionComponent,
     ConsumptionModalComponent,
     DigitalInputComponent,
