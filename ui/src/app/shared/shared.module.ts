@@ -25,6 +25,8 @@ import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { UnitvaluePipe } from './pipe/unitvalue/unitvalue.pipe';
 import { Utils } from './service/utils';
 import { Websocket } from './service/websocket';
+import { FlatWidgetHeaderComponent } from './widgetbuilder/flat/header/header.component';
+import { FlatWidgetFrameComponent } from './widgetbuilder/flat/frame/frame.component';
 
 @NgModule({
   imports: [
@@ -51,6 +53,8 @@ import { Websocket } from './service/websocket';
     UnitvaluePipe,
     // components
     ChartOptionsComponent,
+    FlatWidgetFrameComponent,
+    FlatWidgetHeaderComponent,
     HeaderComponent,
     PercentageBarComponent,
     PickDateComponent,
@@ -78,6 +82,8 @@ import { Websocket } from './service/websocket';
     TranslateModule,
     // components
     ChartOptionsComponent,
+    FlatWidgetFrameComponent,
+    FlatWidgetHeaderComponent,
     HeaderComponent,
     PercentageBarComponent,
     PickDateComponent,

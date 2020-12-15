@@ -1,0 +1,16 @@
+<ion-item lines="full" color="light">
+    <ng-container *ngIf="iconName == null && imgUrl != null">
+        <ion-avatar slot="start">
+            <img [src]="imgUrl">
+        </ion-avatar>
+        <ion-label *ngIf="translateHeading == true" translate>{{ heading }}</ion-label>
+        <ion-label *ngIf="translateHeading == false">{{ heading }}</ion-label>
+    </ng-container>
+    <ng-container *ngIf="iconName != null && imgUrl == null">
+        <ion-item lines="full" color="light">
+            <ion-icon slot="start" size="large" [color]="iconColor" [name]="iconName"></ion-icon>
+            <ion-label *ngIf="translateHeading == true" translate>{{ heading }}</ion-label>
+            <ion-label *ngIf="translateHeading == false">{{ heading }}</ion-label>
+        </ion-item>
+    </ng-container>
+</ion-item>

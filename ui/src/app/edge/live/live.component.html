@@ -43,6 +43,10 @@
 
             </ng-container>
 
+            <ion-col size="12" size-lg="6" class="ion-no-padding">
+              <test-widget></test-widget>
+            </ion-col>
+
             <!-- Widgets depending on the configuration of the OpenEMS Edge -->
             <ng-container *ngFor="let widget of widgets.list" [ngSwitch]="widget.name">
 
