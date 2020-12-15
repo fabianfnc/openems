@@ -27,6 +27,7 @@ import { Utils } from './service/utils';
 import { Websocket } from './service/websocket';
 import { FlatWidgetHeaderComponent } from './widgetbuilder/flat/header/header.component';
 import { FlatWidgetFrameComponent } from './widgetbuilder/flat/frame/frame.component';
+import { FlatWidgetLineComponent } from './widgetbuilder/flat/line/line.component';
 
 @NgModule({
   imports: [
@@ -55,6 +56,7 @@ import { FlatWidgetFrameComponent } from './widgetbuilder/flat/frame/frame.compo
     ChartOptionsComponent,
     FlatWidgetFrameComponent,
     FlatWidgetHeaderComponent,
+    FlatWidgetLineComponent,
     HeaderComponent,
     PercentageBarComponent,
     PickDateComponent,
@@ -84,6 +86,7 @@ import { FlatWidgetFrameComponent } from './widgetbuilder/flat/frame/frame.compo
     ChartOptionsComponent,
     FlatWidgetFrameComponent,
     FlatWidgetHeaderComponent,
+    FlatWidgetLineComponent,
     HeaderComponent,
     PercentageBarComponent,
     PickDateComponent,
