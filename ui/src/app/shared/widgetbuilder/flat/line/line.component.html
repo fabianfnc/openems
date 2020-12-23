@@ -1,1 +1,11 @@
-<ion-card button></ion-card>
+<ng-container *ngIf="service.currentEdge | async as edge">
+    <ng-container *ngIf="edge.currentData | async as currentData">
+        <ng-container *ngIf="currentData.summary as sum">
+            <td style="width:65%" *ngIf="lineObject.translate == true" translate>{{ lineObject.name }}</td>
+            <td style="width:65%" *ngIf="lineObject.translate == false">{{ lineObject.name }}</td>
+            <td style="width:35%" class="align_right">
+                {{ lineObject.channel }}
+            </td>
+        </ng-container>
+    </ng-container>
+</ng-container>

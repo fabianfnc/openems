@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
-import { ModalController } from '@ionic/angular';
+import { Component, Input } from '@angular/core';
+import { Service } from 'src/app/shared/shared';
+import { WidgetLine } from 'src/app/shared/type/widget';
 
 
 @Component({
@@ -8,10 +9,17 @@ import { ModalController } from '@ionic/angular';
 })
 export class FlatWidgetLineComponent {
 
+    @Input() public lineObject: WidgetLine | null = null;
+
     constructor(
-        public modalCtrl: ModalController,
+        public service: Service,
     ) { }
 
-    ngOnInit() { }
-
+    ngOnInit() {
+        this.service.currentEdge.subscribe(edge => {
+            edge.currentData.subscribe(currentData => {
+                console.log("cd", currentData.summary)
+            })
+        })
+    }
 }

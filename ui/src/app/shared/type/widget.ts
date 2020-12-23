@@ -37,6 +37,13 @@ export class Widget {
     componentId: string
 }
 
+export interface WidgetLine {
+    name: string
+    translate: boolean
+    channel: string | number
+    unit: string
+}
+
 export class Widgets {
 
     public static parseWidgets(edge: Edge, config: EdgeConfig): Widgets {

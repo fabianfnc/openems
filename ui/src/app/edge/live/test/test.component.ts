@@ -1,8 +1,9 @@
 import { ActivatedRoute } from '@angular/router';
 import { TestModalComponent } from './modal/modal.component';
 import { Component } from '@angular/core';
-import { Edge, Service } from '../../../shared/shared';
+import { ChannelAddress, Edge, Service, Websocket } from '../../../shared/shared';
 import { ModalController } from '@ionic/angular';
+import { WidgetLine } from 'src/app/shared/type/widget';
 
 @Component({
   selector: TestComponent.SELECTOR,
@@ -14,18 +15,45 @@ export class TestComponent {
 
   private edge: Edge = null;
 
-  public heading = "fickMitNick";
-  public translateHeading = false;
+  public heading = "General.grid";
+  public translateHeading = true;
   public imgUrl = "assets/img/autarchy.png";
+
+  public gridBuy: WidgetLine = {
+    name: "General.gridBuyAdvanced",
+    translate: true,
+    channel: 'sum.grid.buyActivePower',
+    unit: 'kW'
+  }
+
+  public gridSell: WidgetLine = {
+    name: "General.gridSellAdvanced",
+    translate: true,
+    channel: 'sum.grid.SellActivePower',
+    unit: 'kW'
+  }
+
 
   constructor(
     private route: ActivatedRoute,
     public modalCtrl: ModalController,
     public service: Service,
+    private websocket: Websocket
   ) { }
 
   ngOnInit() {
-    this.service.setCurrentComponent('', this.route)
+    this.service.setCurrentComponent('', this.route).then(edge => {
+      this.edge = edge;
+      edge.subscribeChannels(this.websocket, TestComponent.SELECTOR, [
+        new ChannelAddress('_sum', 'GridActivePower'),
+      ]);
+    });
+  }
+
+  ngOnDestroy() {
+    if (this.edge != null) {
+      this.edge.unsubscribeChannels(this.websocket, TestComponent.SELECTOR);
+    }
   }
 
   async presentModal() {
