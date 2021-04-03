@@ -48,6 +48,8 @@ import { SymmetricPeakshavingComponent } from './peakshaving/symmetric/symmetric
 import { SymmetricPeakshavingModalComponent } from './peakshaving/symmetric/modal/modal.component';
 import { TimeslotPeakshavingComponent } from './peakshaving/timeslot/timeslotpeakshaving.component';
 import { TimeslotPeakshavingModalComponent } from './peakshaving/timeslot/modal/modal.component';
+import { RevalueModalComponent } from './revalue/modal/modal.component';
+import { RevalueComponent } from './revalue/revalue.component';
 
 @NgModule({
   imports: [
@@ -74,6 +76,7 @@ import { TimeslotPeakshavingModalComponent } from './peakshaving/timeslot/modal/
     HeatPumpModalComponent,
     ModalComponentEvcsCluster,
     ProductionModalComponent,
+    RevalueModalComponent,
     SelfconsumptionModalComponent,
     SinglethresholdModalComponent,
     StorageModalComponent,
@@ -117,6 +120,8 @@ import { TimeslotPeakshavingModalComponent } from './peakshaving/timeslot/modal/
     OfflineComponent,
     ProductionComponent,
     ProductionModalComponent,
+    RevalueComponent,
+    RevalueModalComponent,
     SelfConsumptionComponent,
     SelfconsumptionModalComponent,
     SinglethresholdComponent,

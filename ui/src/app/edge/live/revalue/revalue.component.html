@@ -1,0 +1,18 @@
+<ng-container *ngIf="service.currentEdge | async as edge">
+    <ng-container *ngIf="edge.currentData | async as currentData">
+        <ion-card button (click)="presentModal()">
+            <ion-item lines="full" color="light">
+                <ion-icon slot="start" color="primary" name="construct-outline"></ion-icon>
+                <ion-label>FEMS-Aufwertung</ion-label>
+            </ion-item>
+            <ion-card-content>
+                <table class="full_width">
+                    <tr>
+                        <td style="width: 100%">
+                        </td>
+                    </tr>
+                </table>
+            </ion-card-content>
+        </ion-card>
+    </ng-container>
+</ng-container>
